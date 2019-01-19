@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
+using ProductService.Controllers;
+using ProductService.Models;
+using System.Collections.Generic;
 
 namespace Tests
 {
@@ -10,9 +14,13 @@ namespace Tests
         }
 
         [Test]
-        public void Test1()
+        public void GetAllPricesReturnsListOfPrices()
         {
-            Assert.Pass();
+            PriceController priceController = new PriceController();
+            var result = priceController.GetAllPrices();
+            var contentResult = result as ActionResult<IEnumerable<Product>>;
+
+            Assert.NotNull(contentResult.Value);
         }
     }
 }
