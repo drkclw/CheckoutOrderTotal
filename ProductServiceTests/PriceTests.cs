@@ -143,5 +143,20 @@ namespace Tests
             Assert.AreEqual(priceContentResult.Value, 2.5f);
         }
 
+        [Test]
+        public void GetPriceForNonExistentProductReturnsZero()
+        {
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetByProductName(nonExistentProduct.ProductName)).Returns((Product)null);
+
+            PriceController priceController = new PriceController(mockPriceRepository.Object);
+
+            string productName = "Bananas";
+
+            var priceResult = priceController.GetPrice(productName);
+            var priceContentResult = priceResult as ActionResult<float>;
+
+            Assert.AreEqual(priceContentResult.Value, 0);
+        }
     }
 }
