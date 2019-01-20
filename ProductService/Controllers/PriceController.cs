@@ -14,11 +14,6 @@ namespace ProductService.Controllers
     {
         IRepository<Product> priceRepository;
 
-        public PriceController()
-        {
-
-        }
-
         public PriceController(IRepository<Product> repository)
         {
             priceRepository = repository;
@@ -26,6 +21,7 @@ namespace ProductService.Controllers
 
         // GET api/prices
         [HttpGet]
+        [Route("allprices")]
         public ActionResult<IEnumerable<Product>> GetAllPrices()
         {            
             return priceRepository.GetAll().ToList();
