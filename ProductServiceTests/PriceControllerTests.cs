@@ -12,6 +12,7 @@ namespace ProductServiceTests
         private Product validProduct;
         private Product invalidProduct;
         private Product nonExistentProduct;
+        private List<Product> productList;
 
         [SetUp]
         public void Setup()
@@ -36,12 +37,18 @@ namespace ProductServiceTests
                 Price = 5f,
                 Unit = Unit.LBS
             };
+
+            productList.Add(validProduct);
+            productList.Add(nonExistentProduct);
         }
 
         [Test]
         public void GetAllPricesReturnsListOfPrices()
         {
-            PriceController priceController = new PriceController(new PriceRepository());
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            PriceController priceController = new PriceController(mockPriceRepository.Object);
             var result = priceController.GetAllPrices();
             var contentResult = result as ActionResult<IEnumerable<Product>>;
 
@@ -51,7 +58,10 @@ namespace ProductServiceTests
         [Test]
         public void AddingValidPriceReturnsSuccess()
         {
-            PriceController priceController = new PriceController(new PriceRepository());
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.Save(validProduct));
+
+            PriceController priceController = new PriceController(mockPriceRepository.Object);
             
             var result = priceController.AddPrice(validProduct);
             var contentResult = result as ActionResult<string>;
@@ -62,35 +72,20 @@ namespace ProductServiceTests
         [Test]
         public void AddingInvalidPriceReturnsErrorMessage()
         {
-            PriceController priceController = new PriceController(new PriceRepository());
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.Save(invalidProduct));
+
+            PriceController priceController = new PriceController(mockPriceRepository.Object);
             
             var result = priceController.AddPrice(invalidProduct);
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Error: Price must be bigger than 0.");
         }
-
-        [Test]
-        public void ValidPriceIsAddedToTheList()
-        {
-            var priceRepository = new PriceRepository();
-            PriceController priceController = new PriceController(priceRepository);
-           
-            var addResult = priceController.AddPrice(validProduct);
-            var addContentResult = addResult as ActionResult<string>;
-
-            var getAllPricesResult = priceController.GetAllPrices();
-            var getAllPricesContentResult = getAllPricesResult as ActionResult<IEnumerable<Product>>;
-            var priceList = new List<Product>();
-            priceList.AddRange(getAllPricesContentResult.Value);            
-
-            Assert.AreEqual(priceList[0].ProductName, "Can of soup");
-        }
-
+            
         [Test]
         public void UpdateValidExistingPriceReturnsSuccess()
-        {
-            //var priceRepository = new PriceRepository();
+        {            
             Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
             mockPriceRepository.Setup(x => x.Update(validProduct)).Returns(true);
 
