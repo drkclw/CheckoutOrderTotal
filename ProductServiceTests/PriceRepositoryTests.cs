@@ -9,6 +9,7 @@ namespace ProductServiceTests
     public class PriceRepositoryTests
     {
         private Product product;
+        private Product product2;
         [SetUp]
         public void Setup()
         {
@@ -16,6 +17,12 @@ namespace ProductServiceTests
             {
                 ProductName = "Can of soup",
                 Price = 2.50f
+            };
+
+            product2 = new Product
+            {
+                ProductName = "Bananas",
+                Price = 5f
             };
         }
 
@@ -65,6 +72,18 @@ namespace ProductServiceTests
 
             Assert.AreEqual(price.ProductName, "Can of soup");
             Assert.AreEqual(price.Price, 2.5f);
+        }
+
+        [Test]
+        public void GetByProductNameWithNonExistentProductNameReturnsNull()
+        {
+            IRepository<Product> priceRepository = new PriceRepository();
+
+            priceRepository.Save(product);
+
+            var price = priceRepository.GetByProductName("Bananas");
+
+            Assert.IsNull(price);
         }
     }
 }
