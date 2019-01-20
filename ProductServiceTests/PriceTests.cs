@@ -91,5 +91,19 @@ namespace Tests
 
             Assert.AreEqual(updateContentResult.Value, "Success");
         }
+
+        [Test]
+        public void UpdateInvalidExistingPriceReturnsError()
+        {
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.Update(invalidProduct)).Returns(true);
+
+            PriceController priceController = new PriceController(mockPriceRepository.Object);
+
+            var updateResult = priceController.UpdatePrice(invalidProduct);
+            var updateContentResult = updateResult as ActionResult<string>;
+
+            Assert.AreEqual(updateContentResult.Value, "Error: Price must be bigger than 0.");
+        }
     }
 }

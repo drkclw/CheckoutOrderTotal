@@ -44,6 +44,11 @@ namespace ProductService.Controllers
         [HttpPut]
         public ActionResult<string> UpdatePrice([FromBody] Product product)
         {
+            if(product.Price < 0)
+            {
+                return "Error: Price must be bigger than 0.";
+            }
+
             bool updateResult = priceRepository.Update(product);
 
             if(updateResult)
