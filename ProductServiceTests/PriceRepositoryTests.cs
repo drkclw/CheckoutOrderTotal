@@ -28,5 +28,17 @@ namespace ProductServiceTests
 
             Assert.NotNull(priceList);
         }
+
+        [Test]
+        public void CallingSaveAddsPriceToList()
+        {
+            IRepository<Product> priceRepository = new PriceRepository();
+
+            priceRepository.Save(product);
+
+            var priceList = priceRepository.GetAll();
+
+            Assert.AreEqual(priceList.Count, 1);
+        }
     }
 }
