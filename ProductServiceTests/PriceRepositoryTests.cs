@@ -40,5 +40,18 @@ namespace ProductServiceTests
 
             Assert.AreEqual(priceList.Count, 1);
         }
+
+        [Test]
+        public void CallingSaveAddsRightDataToList()
+        {
+            IRepository<Product> priceRepository = new PriceRepository();
+
+            priceRepository.Save(product);
+
+            var priceList = priceRepository.GetAll();
+
+            Assert.AreEqual(priceList[0].ProductName, "Can of soup");
+            Assert.AreEqual(priceList[0].Price, 2.5f);
+        }
     }
 }
