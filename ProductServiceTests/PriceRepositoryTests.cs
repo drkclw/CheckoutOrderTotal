@@ -85,5 +85,16 @@ namespace ProductServiceTests
 
             Assert.IsNull(price);
         }
+
+        [Test]
+        public void UpdateWithExistingPriceReturnsTrue()
+        {
+            IRepository<Product> priceRepository = new PriceRepository();
+
+            priceRepository.Save(product);
+            bool updated = priceRepository.Update(product);            
+
+            Assert.IsTrue(updated);
+        }
     }
 }
