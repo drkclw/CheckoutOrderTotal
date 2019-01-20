@@ -40,5 +40,11 @@ namespace ProductService.Controllers
                 return "Error: Price must be bigger than 0.";
             }
         }
+
+        [HttpPut]
+        public ActionResult<string> UpdatePrice([FromBody] Product product)
+        {
+            return "Success";
+        }
     }
 }
