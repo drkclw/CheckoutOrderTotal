@@ -30,7 +30,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void CallingSaveAddsPriceToList()
+        public void SaveAddsPriceToList()
         {
             IRepository<Product> priceRepository = new PriceRepository();
 
@@ -42,7 +42,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void CallingSaveAddsRightDataToList()
+        public void SaveAddsRightDataToList()
         {
             IRepository<Product> priceRepository = new PriceRepository();
 
@@ -52,6 +52,19 @@ namespace ProductServiceTests
 
             Assert.AreEqual(priceList[0].ProductName, "Can of soup");
             Assert.AreEqual(priceList[0].Price, 2.5f);
+        }
+
+        [Test]
+        public void GetByProductNameWithExistingProductNameReturnsRightPrice()
+        {
+            IRepository<Product> priceRepository = new PriceRepository();
+
+            priceRepository.Save(product);
+
+            var price = priceRepository.GetByProductName("Can of soup");
+
+            Assert.AreEqual(price.ProductName, "Can of soup");
+            Assert.AreEqual(price.Price, 2.5f);
         }
     }
 }
