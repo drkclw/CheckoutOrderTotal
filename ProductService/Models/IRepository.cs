@@ -11,5 +11,7 @@ namespace ProductService.Models
         T GetByProductName(string productName);
         void Save(T saveThis);
         void Delete(T deleteThis);
+
+        bool Update(T updateThis);
     }
 }

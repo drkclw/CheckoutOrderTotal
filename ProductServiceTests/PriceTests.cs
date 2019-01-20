@@ -77,7 +77,7 @@ namespace Tests
         }
 
         [Test]
-        public void UpdateExistingPriceReturnsSuccess()
+        public void UpdateValidExistingPriceReturnsSuccess()
         {
             var priceRepository = new PriceRepository();
             PriceController priceController = new PriceController(priceRepository);

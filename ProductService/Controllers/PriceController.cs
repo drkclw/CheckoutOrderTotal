@@ -44,6 +44,7 @@ namespace ProductService.Controllers
         [HttpPut]
         public ActionResult<string> UpdatePrice([FromBody] Product product)
         {
+            priceRepository.Update(product);
             return "Success";
         }
     }

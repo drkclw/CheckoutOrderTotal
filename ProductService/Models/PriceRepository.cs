@@ -31,6 +31,21 @@ namespace ProductService.Models
         {
             throw new NotImplementedException();
         }
+
+        public bool Update(Product updateThis)
+        {
+            var productDict = priceList.ToDictionary(p => p.ProductName, p => p);
+
+            if (productDict.ContainsKey(updateThis.ProductName))
+            {
+                productDict[updateThis.ProductName].Price = updateThis.Price;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
 }
