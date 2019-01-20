@@ -38,5 +38,21 @@ namespace Tests
 
             Assert.AreEqual(contentResult.Value, "Success");
         }
+
+        [Test]
+        public void AddingInvalidPriceReturnsErrorMessage()
+        {
+            PriceController priceController = new PriceController(new PriceRepository());
+
+            var product = new Product
+            {
+                ProductName = "Can of soup",
+                Price = -1f
+            };
+            var result = priceController.AddPrice(product);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Price must be bigger than 0.");
+        }
     }
 }

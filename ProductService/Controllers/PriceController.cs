@@ -30,7 +30,15 @@ namespace ProductService.Controllers
         [HttpPost]
         public ActionResult<string> AddPrice([FromBody] Product product)
         {
-            return "Success";
+            if (product.Price > 0)
+            {
+                priceRepository.Save(product);
+                return "Success";
+            }
+            else
+            {
+                return "Error: Price must be bigger than 0.";
+            }
         }
     }
 }
