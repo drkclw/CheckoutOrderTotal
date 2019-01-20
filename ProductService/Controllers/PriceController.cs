@@ -12,11 +12,23 @@ namespace ProductService.Controllers
     [ApiController]
     public class PriceController : ControllerBase
     {
-        // GET api/values
+        IRepository<Product> priceRepository;
+
+        public PriceController()
+        {
+
+        }
+
+        public PriceController(IRepository<Product> repository)
+        {
+            priceRepository = repository;
+        }
+
+        // GET api/prices
         [HttpGet]
         public ActionResult<IEnumerable<Product>> GetAllPrices()
-        {
-            return new List<Product>();
+        {            
+            return priceRepository.GetAll().ToList();
         }
     }
 }

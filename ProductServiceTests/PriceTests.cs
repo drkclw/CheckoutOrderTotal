@@ -16,7 +16,7 @@ namespace Tests
         [Test]
         public void GetAllPricesReturnsListOfPrices()
         {
-            PriceController priceController = new PriceController();
+            PriceController priceController = new PriceController(new PriceRepository());
             var result = priceController.GetAllPrices();
             var contentResult = result as ActionResult<IEnumerable<Product>>;
 
