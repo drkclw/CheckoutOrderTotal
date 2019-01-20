@@ -25,7 +25,7 @@ namespace ProductService.Models
         }
         public void Save(Product saveThis)
         {
-            throw new NotImplementedException();
+            priceList.Add(saveThis);
         }
         public void Delete(Product deleteThis)
         {

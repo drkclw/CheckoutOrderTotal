@@ -54,5 +54,27 @@ namespace Tests
 
             Assert.AreEqual(contentResult.Value, "Error: Price must be bigger than 0.");
         }
+
+        [Test]
+        public void ValidPriceIsAddedToTheList()
+        {
+            var priceRepository = new PriceRepository();
+            PriceController priceController = new PriceController(priceRepository);
+
+            var product = new Product
+            {
+                ProductName = "Can of soup",
+                Price = 2.5f
+            };
+            var addResult = priceController.AddPrice(product);
+            var addContentResult = addResult as ActionResult<string>;
+
+            var getAllPricesResult = priceController.GetAllPrices();
+            var getAllPricesContentResult = getAllPricesResult as ActionResult<IEnumerable<Product>>;
+            var priceList = new List<Product>();
+            priceList.AddRange(getAllPricesContentResult.Value);            
+
+            Assert.AreEqual(priceList[0].ProductName, "Can of soup");
+        }
     }
 }
