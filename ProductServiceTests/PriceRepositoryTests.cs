@@ -18,19 +18,22 @@ namespace ProductServiceTests
             product = new Product
             {
                 ProductName = "Can of soup",
-                Price = 2.50f
+                Price = 2.50f,
+                Unit = Unit.EA
             };
 
             product2 = new Product
             {
                 ProductName = "Bananas",
-                Price = 5f
+                Price = 5f,
+                Unit = Unit.LBS
             };
 
             updatedProduct = new Product
             {
                 ProductName = "Can of soup",
-                Price = 2.80f
+                Price = 2.80f,
+                Unit = Unit.EA
             };
         }
 

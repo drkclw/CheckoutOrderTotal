@@ -19,19 +19,22 @@ namespace ProductServiceTests
             validProduct = new Product
             {
                 ProductName = "Can of soup",
-                Price = 2.50f
+                Price = 2.50f,
+                Unit = Unit.EA
             };
 
             invalidProduct = new Product
             {
                 ProductName = "Can of soup",
-                Price = -1f
+                Price = -1f,
+                Unit = Unit.EA
             };
 
             nonExistentProduct = new Product
             {
                 ProductName = "Bananas",
-                Price = 5f
+                Price = 5f,
+                Unit = Unit.LBS
             };
         }
 

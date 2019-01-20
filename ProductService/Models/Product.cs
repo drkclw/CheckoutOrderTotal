@@ -10,5 +10,7 @@ namespace ProductService.Models
         public string ProductName { get; set; }
 
         public float Price { get; set; }
+
+        public Unit Unit { get; set; }
     }
 }
