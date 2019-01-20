@@ -10,6 +10,8 @@ namespace ProductServiceTests
     {
         private Product product;
         private Product product2;
+        private Product updatedProduct;
+
         [SetUp]
         public void Setup()
         {
@@ -23,6 +25,12 @@ namespace ProductServiceTests
             {
                 ProductName = "Bananas",
                 Price = 5f
+            };
+
+            updatedProduct = new Product
+            {
+                ProductName = "Can of soup",
+                Price = 2.80f
             };
         }
 
@@ -92,9 +100,34 @@ namespace ProductServiceTests
             IRepository<Product> priceRepository = new PriceRepository();
 
             priceRepository.Save(product);
-            bool updated = priceRepository.Update(product);            
+            bool updated = priceRepository.Update(updatedProduct);            
 
             Assert.IsTrue(updated);
+        }
+
+        [Test]
+        public void UpdateWithNonExistentPriceReturnsFalse()
+        {
+            IRepository<Product> priceRepository = new PriceRepository();
+
+            priceRepository.Save(product);
+            bool updated = priceRepository.Update(product2);
+
+            Assert.IsFalse(updated);
+        }
+
+        [Test]
+        public void UpdateWithExistingPriceUpdatesRightData()
+        {
+            IRepository<Product> priceRepository = new PriceRepository();
+
+            priceRepository.Save(product);
+            bool updated = priceRepository.Update(updatedProduct);
+            var priceList = priceRepository.GetAll();
+
+            Assert.IsTrue(updated);
+            Assert.AreEqual(priceList[0].ProductName, "Can of soup");
+            Assert.AreEqual(priceList[0].Price, 2.8f);
         }
     }
 }
