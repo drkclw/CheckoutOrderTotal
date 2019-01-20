@@ -21,7 +21,16 @@ namespace ProductService.Models
 
         public Product GetByProductName(string productName)
         {
-            throw new NotImplementedException();
+            var productDict = priceList.ToDictionary(p => p.ProductName, p => p);
+
+            if (productDict.ContainsKey(productName))
+            {
+                return productDict[productName];
+            }
+            else
+            {
+                return null;
+            }
         }
         public void Save(Product saveThis)
         {

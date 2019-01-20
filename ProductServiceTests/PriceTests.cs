@@ -130,7 +130,10 @@ namespace Tests
         [Test]
         public void GetPriceForSpecificProductReturnsPrice()
         {
-            PriceController priceController = new PriceController(new PriceRepository());
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetByProductName(validProduct.ProductName)).Returns(validProduct);
+
+            PriceController priceController = new PriceController(mockPriceRepository.Object);
 
             string productName = "Can of soup";
 

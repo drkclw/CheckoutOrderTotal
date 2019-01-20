@@ -62,7 +62,15 @@ namespace ProductService.Controllers
         [HttpGet("{productName}")]
         public ActionResult<float> GetPrice(string productName)
         {
-            return 2.5f;
+            var product = priceRepository.GetByProductName(productName);
+            if (product == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return product.Price;
+            }
         }
     }
 }
