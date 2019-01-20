@@ -30,5 +30,11 @@ namespace ProductService.Controllers
         {            
             return priceRepository.GetAll().ToList();
         }
+
+        [HttpPost]
+        public ActionResult<string> AddPrice([FromBody] Product product)
+        {
+            return "Success";
+        }
     }
 }

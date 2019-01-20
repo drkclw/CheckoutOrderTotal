@@ -22,5 +22,21 @@ namespace Tests
 
             Assert.NotNull(contentResult.Value);
         }
+
+        [Test]
+        public void AddingValidPriceReturnsSuccess()
+        {
+            PriceController priceController = new PriceController(new PriceRepository());
+
+            var product = new Product
+            {
+                ProductName = "Can of soup",
+                Price = 2.50f
+            };
+            var result = priceController.AddPrice(product);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Success");
+        }
     }
 }
