@@ -19,7 +19,7 @@ namespace ProductService.Controllers
             priceRepository = repository;
         }
 
-        // GET api/prices
+        // GET api/allprices
         [HttpGet]
         [Route("allprices")]
         public ActionResult<IEnumerable<Product>> GetAllPrices()
@@ -57,6 +57,12 @@ namespace ProductService.Controllers
             {
                 return "Product does not exist, create product before updating price.";
             }
+        }
+
+        [HttpGet("{productName}")]
+        public ActionResult<float> GetPrice(string productName)
+        {
+            return 2.5f;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Tests
     {
         private Product validProduct;
         private Product invalidProduct;
+        private Product nonExistentProduct;
 
         [SetUp]
         public void Setup()
@@ -25,6 +26,12 @@ namespace Tests
             {
                 ProductName = "Can of soup",
                 Price = -1f
+            };
+
+            nonExistentProduct = new Product
+            {
+                ProductName = "Bananas",
+                Price = 5f
             };
         }
 
@@ -105,5 +112,33 @@ namespace Tests
 
             Assert.AreEqual(updateContentResult.Value, "Error: Price must be bigger than 0.");
         }
+
+        [Test]
+        public void UpdateNonExistentPriceReturnsError()
+        {
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.Update(nonExistentProduct)).Returns(false);
+
+            PriceController priceController = new PriceController(mockPriceRepository.Object);
+
+            var updateResult = priceController.UpdatePrice(nonExistentProduct);
+            var updateContentResult = updateResult as ActionResult<string>;
+
+            Assert.AreEqual(updateContentResult.Value, "Product does not exist, create product before updating price.");
+        }
+
+        [Test]
+        public void GetPriceForSpecificProductReturnsPrice()
+        {
+            PriceController priceController = new PriceController(new PriceRepository());
+
+            string productName = "Can of soup";
+
+            var priceResult = priceController.GetPrice(productName);
+            var priceContentResult = priceResult as ActionResult<float>;
+
+            Assert.AreEqual(priceContentResult.Value, 2.5f);
+        }
+
     }
 }
