@@ -5,9 +5,9 @@ using ProductService.Controllers;
 using ProductService.Models;
 using System.Collections.Generic;
 
-namespace Tests
+namespace ProductServiceTests
 {
-    public class Tests
+    public class PriceControllerTests
     {
         private Product validProduct;
         private Product invalidProduct;
