@@ -44,8 +44,14 @@ namespace ProductService.Controllers
         [HttpPut]
         public ActionResult<string> UpdatePrice([FromBody] Product product)
         {
-            priceRepository.Update(product);
-            return "Success";
+            bool updateResult = priceRepository.Update(product);
+
+            if(updateResult)
+                return "Success";
+            else
+            {
+                return "Product does not exist, create product before updating price.";
+            }
         }
     }
 }

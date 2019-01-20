@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NUnit.Framework;
 using ProductService.Controllers;
 using ProductService.Models;
@@ -79,9 +80,12 @@ namespace Tests
         [Test]
         public void UpdateValidExistingPriceReturnsSuccess()
         {
-            var priceRepository = new PriceRepository();
-            PriceController priceController = new PriceController(priceRepository);
+            //var priceRepository = new PriceRepository();
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.Update(validProduct)).Returns(true);
 
+            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            
             var updateResult = priceController.UpdatePrice(validProduct);
             var updateContentResult = updateResult as ActionResult<string>;
 
