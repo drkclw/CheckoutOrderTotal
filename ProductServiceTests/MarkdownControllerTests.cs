@@ -18,7 +18,8 @@ namespace ProductServiceTests
         private Product bananas;
         private Markdown invalidMarkdown;
         private Markdown markdownForNonExistentPrice;
-        private Markdown nonExistentMarkdown;
+        private Markdown nonExistentMarkdownWithExistingPrice;
+        private Markdown nonExistentMarkdownWithoutExistingPrice;
 
         [SetUp]
         public void Setup()
@@ -55,7 +56,13 @@ namespace ProductServiceTests
                 Amount = 2.55f
             };
 
-            nonExistentMarkdown = new Markdown
+            nonExistentMarkdownWithExistingPrice = new Markdown
+            {
+                ProductName = "Bananas",
+                Amount = 0.55f
+            };
+
+            nonExistentMarkdownWithoutExistingPrice = new Markdown
             {
                 ProductName = "Can of beans",
                 Amount = 0.55f
@@ -180,7 +187,7 @@ namespace ProductServiceTests
         public void UpdateMarkdownForNonExistentPriceReturnsError()
         {
             Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.Update(nonExistentMarkdown)).Returns(false);
+            mockMarkdownRepository.Setup(x => x.Update(nonExistentMarkdownWithoutExistingPrice)).Returns(false);
 
             Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
             mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
@@ -188,10 +195,28 @@ namespace ProductServiceTests
             MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
                 mockPriceRepository.Object);
 
-            var result = markdownController.UpdateMarkdown(nonExistentMarkdown);
+            var result = markdownController.UpdateMarkdown(nonExistentMarkdownWithoutExistingPrice);
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Error: Cannot update markdown for a product that doesn't have a price.");
+        }
+
+        [Test]
+        public void UpdateNonExistentMarkdownReturnsError()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.Update(nonExistentMarkdownWithExistingPrice)).Returns(false);
+
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
+                mockPriceRepository.Object);
+
+            var result = markdownController.UpdateMarkdown(nonExistentMarkdownWithExistingPrice);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Markdown does not exist, create markdown before updating price.");
         }
     }
 }

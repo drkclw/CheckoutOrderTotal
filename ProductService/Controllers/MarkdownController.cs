@@ -66,7 +66,7 @@ namespace ProductService.Controllers
                     if (_markdownRepository.Update(markdown))
                         return "Success.";
                     else
-                        return "Success.";
+                        return "Markdown does not exist, create markdown before updating price.";
                 }
                 else
                 {
