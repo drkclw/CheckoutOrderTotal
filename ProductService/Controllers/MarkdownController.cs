@@ -53,5 +53,11 @@ namespace ProductService.Controllers
                 return "Error: Cannot add markdown for a product that doesn't have a price.";
             }
         }
+
+        [HttpPut]
+        public ActionResult<string> UpdateMarkdown([FromBody] Markdown product)
+        {
+            return "Success.";
+        }
     }
 }

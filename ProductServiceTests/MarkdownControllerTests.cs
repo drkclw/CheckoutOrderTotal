@@ -106,10 +106,10 @@ namespace ProductServiceTests
             Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
             mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
 
-            MarkdownController priceController = new MarkdownController(mockMarkdownRepository.Object,
+            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
                 mockPriceRepository.Object);
 
-            var result = priceController.AddMarkdown(invalidMarkdown);
+            var result = markdownController.AddMarkdown(invalidMarkdown);
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Error: Markdown must be smaller than price.");
@@ -124,13 +124,31 @@ namespace ProductServiceTests
             Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
             mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
 
-            MarkdownController priceController = new MarkdownController(mockMarkdownRepository.Object,
+            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
                 mockPriceRepository.Object);
 
-            var result = priceController.AddMarkdown(markdownForNonExistentPrice);
+            var result = markdownController.AddMarkdown(markdownForNonExistentPrice);
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Error: Cannot add markdown for a product that doesn't have a price.");
+        }
+
+        [Test]
+        public void UpdateValidExistingMarkdownReturnsSuccess()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.Update(validMarkdown)).Returns(true);
+
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
+                mockPriceRepository.Object);
+
+            var result = markdownController.UpdateMarkdown(validMarkdown);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Success.");
         }
     }
 }
