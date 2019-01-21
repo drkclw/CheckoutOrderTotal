@@ -25,7 +25,7 @@ namespace ProductService.Models
 
         public void Save(ISpecial saveThis)
         {
-            throw new NotImplementedException();
+            specialsList.Add(saveThis);
         }
         public void Delete(ISpecial deleteThis)
         {

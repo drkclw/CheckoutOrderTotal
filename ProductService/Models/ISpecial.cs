@@ -7,12 +7,12 @@ namespace ProductService.Models
 {
     public interface ISpecial
     {
-        string ProductName { get; set; }
+        string ProductName { get; }
 
-        int PurchaseQty { get; set; }
+        int PurchaseQty { get; }
 
-        SpecialType Type { get; set; }
+        SpecialType Type { get; }
 
-        bool IsActive { get; set; }
+        bool IsActive { get; }
     }
 }

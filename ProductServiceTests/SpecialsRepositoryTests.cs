@@ -8,10 +8,12 @@ namespace ProductServiceTests
 {
     public class SpecialsRepositoryTests
     {
+        private ISpecial priceSpecial;
+
         [SetUp]
         public void Setup()
         {
-
+            priceSpecial = new PriceSpecial("Can of soup", 2, SpecialType.Price, true, 5);
         }
 
         [Test]
@@ -22,6 +24,19 @@ namespace ProductServiceTests
             var specialsList = specialsRepository.GetAll();
 
             Assert.NotNull(specialsList);
+        }
+
+        [Test]
+        public void SaveAddsPriceSpecialToList()
+        {
+            IRepository<ISpecial> specialsRepository = new SpecialsRepository();
+
+            specialsRepository.Save(priceSpecial);
+
+            var priceList = specialsRepository.GetAll();
+
+            Assert.AreEqual(priceList.Count, 1);
+            Assert.AreEqual(priceList[0].Type, SpecialType.Price);
         }
     }
 }
