@@ -5,14 +5,18 @@ using System.Threading.Tasks;
 
 namespace ProductService.Models
 {
+    /// <summary>
+    /// This class will accomodate specials with the format buy Buy N items get M at %X off and 
+    /// Buy N items get M at %X off limit Y
+    /// </summary>
     public class LimitSpecial : ISpecial
     {
-        public LimitSpecial(string ProductName, int PurchaseQty, SpecialType Type,
+        public LimitSpecial(string ProductName, int PurchaseQty, 
             bool IsActive, int DiscountQty, float DiscountAmount, int Limit)
         {
             this.ProductName = ProductName;
             this.PurchaseQty = PurchaseQty;
-            this.Type = Type;
+            this.Type = SpecialType.Limit;
             this.IsActive = IsActive;
             this.DiscountQty = DiscountQty;
             this.DiscountAmount = DiscountAmount;

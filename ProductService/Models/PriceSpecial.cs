@@ -5,14 +5,17 @@ using System.Threading.Tasks;
 
 namespace ProductService.Models
 {
+    /// <summary>
+    /// This class will accomodate specials with the format buy N for $X.
+    /// </summary>
     public class PriceSpecial : ISpecial
     {
-        public PriceSpecial(string ProductName, int PurchaseQty, SpecialType Type,
+        public PriceSpecial(string ProductName, int PurchaseQty,
             bool IsActive, float Price)
         {
             this.ProductName = ProductName;
             this.PurchaseQty = PurchaseQty;
-            this.Type = Type;
+            this.Type = SpecialType.Price;
             this.IsActive = IsActive;
             this.Price = Price;
         }

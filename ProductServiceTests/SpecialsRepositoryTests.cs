@@ -10,13 +10,16 @@ namespace ProductServiceTests
     {
         private ISpecial priceSpecial;
         private ISpecial limitSpecialNoLimit;
+        private ISpecial restrictionSpecialLesser;
 
         [SetUp]
         public void Setup()
         {
-            priceSpecial = new PriceSpecial("Can of soup", 2, SpecialType.Price, true, 5);
+            priceSpecial = new PriceSpecial("Can of soup", 2, true, 5);
 
-            limitSpecialNoLimit = new LimitSpecial("Can of soup", 2, SpecialType.Limit, true, 1, 0.5f, 0);
+            limitSpecialNoLimit = new LimitSpecial("Can of soup", 2, true, 1, 0.5f, 0);
+
+            restrictionSpecialLesser = new RestrictionSpecial("Can of soup", 2, true, 1, 0.5f, RestrictionType.Lesser);
         }
 
         [Test]
@@ -53,6 +56,19 @@ namespace ProductServiceTests
 
             Assert.AreEqual(priceList.Count, 1);
             Assert.AreEqual(priceList[0].Type, SpecialType.Limit);
+        }
+
+        [Test]
+        public void SaveAddsRestrictionSpecialToList()
+        {
+            IRepository<ISpecial> specialsRepository = new SpecialsRepository();
+
+            specialsRepository.Save(restrictionSpecialLesser);
+
+            var priceList = specialsRepository.GetAll();
+
+            Assert.AreEqual(priceList.Count, 1);
+            Assert.AreEqual(priceList[0].Type, SpecialType.Restriction);
         }
     }
 }
