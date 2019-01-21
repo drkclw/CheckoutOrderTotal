@@ -39,5 +39,19 @@ namespace ProductServiceTests
 
             Assert.NotNull(contentResult.Value);
         }
+
+        [Test]
+        public void AddingValidMarkdownReturnsSuccess()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.Save(validMarkdown));
+
+            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object);
+
+            var result = markdownController.AddMarkdown(validMarkdown);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Success");
+        }
     }
 }

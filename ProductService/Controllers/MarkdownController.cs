@@ -26,5 +26,11 @@ namespace ProductService.Controllers
         {
             return markdownRepository.GetAll().ToList();
         }
+
+        [HttpPost]
+        public ActionResult<string> AddMarkdown([FromBody] Markdown markdown)
+        {                        
+            return "Success";            
+        }
     }
 }
