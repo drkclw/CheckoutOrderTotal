@@ -57,10 +57,19 @@ namespace ProductService.Controllers
         [HttpPut]
         public ActionResult<string> UpdateMarkdown([FromBody] Markdown markdown)
         {
-            if (_markdownRepository.Update(markdown))
-                return "Success.";
+            var priceDict = _priceRepository.GetAll().ToDictionary(p => p.ProductName, p => p);
+
+            if (priceDict[markdown.ProductName].Price > markdown.Amount)
+            {
+                if (_markdownRepository.Update(markdown))
+                    return "Success.";
+                else
+                    return "Success.";
+            }
             else
-                return "Success.";
+            {
+                return "Error: Markdown must be smaller than price.";
+            }
         }
     }
 }
