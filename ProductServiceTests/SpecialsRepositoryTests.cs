@@ -12,6 +12,7 @@ namespace ProductServiceTests
         private ISpecial limitSpecialNoLimit;
         private ISpecial restrictionSpecialLesser;
         private ISpecial nonExistentPriceSpecial;
+        private ISpecial updatedPriceSpecial;
 
         [SetUp]
         public void Setup()
@@ -23,6 +24,8 @@ namespace ProductServiceTests
             restrictionSpecialLesser = new RestrictionSpecial("Can of soup", 2, true, 1, 0.5f, RestrictionType.Lesser);
 
             nonExistentPriceSpecial = new PriceSpecial("Can of beans", 2, true, 6);
+
+            updatedPriceSpecial = new PriceSpecial("Can of soup", 2, true, 6);
         }
 
         [Test]
@@ -97,6 +100,17 @@ namespace ProductServiceTests
             var priceSpecialResult = (PriceSpecial)specialsRepository.GetByProductName("Can of beans");
 
             Assert.IsNull(priceSpecialResult);
+        }
+
+        [Test]
+        public void UpdateWithExistingSpecialOfTheSameTypeReturnsTrue()
+        {
+            IRepository<ISpecial> specialsRepository = new SpecialsRepository();
+
+            specialsRepository.Save(priceSpecial);
+            bool updated = specialsRepository.Update(updatedPriceSpecial);
+
+            Assert.IsTrue(updated);
         }
     }
 }

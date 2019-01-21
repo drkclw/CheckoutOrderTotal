@@ -43,7 +43,17 @@ namespace ProductService.Models
 
         public bool Update(ISpecial updateThis)
         {
-            throw new NotImplementedException();
+            var specialsDict = specialsList.ToDictionary(p => p.ProductName, p => p);
+
+            if (specialsDict.ContainsKey(updateThis.ProductName))
+            {
+                specialsDict[updateThis.ProductName] = updateThis;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
