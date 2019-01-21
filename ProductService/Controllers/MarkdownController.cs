@@ -12,11 +12,14 @@ namespace ProductService.Controllers
     [ApiController]
     public class MarkdownController : ControllerBase
     {
-        private IRepository<Markdown> markdownRepository;
+        private IRepository<Markdown> _markdownRepository;
+        private IRepository<Product> _priceRepository;
 
-        public MarkdownController(IRepository<Markdown> repository)
+        public MarkdownController(IRepository<Markdown> markdownRepository, 
+            IRepository<Product> priceRepository)
         {
-            markdownRepository = repository;
+            _markdownRepository = markdownRepository;
+            _priceRepository = priceRepository;
         }
 
         // GET api/allprices
@@ -24,12 +27,22 @@ namespace ProductService.Controllers
         [Route("allmarkdowns")]
         public ActionResult<IEnumerable<Markdown>> GetAllMarkdowns()
         {
-            return markdownRepository.GetAll().ToList();
+            return _markdownRepository.GetAll().ToList();
         }
 
         [HttpPost]
         public ActionResult<string> AddMarkdown([FromBody] Markdown markdown)
-        {                        
+        {
+            var priceList = _priceRepository.GetAll();
+            var priceDict = priceList.ToDictionary(p => p.ProductName, p => p);            
+
+            if (priceDict.ContainsKey(markdown.ProductName) && 
+                markdown.Amount < priceDict[markdown.ProductName].Price)
+            {
+                _markdownRepository.Save(markdown);
+                return "Success";
+            }
+
             return "Success";            
         }
     }
