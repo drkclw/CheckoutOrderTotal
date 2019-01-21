@@ -8,10 +8,15 @@ namespace ProductServiceTests
 {
     public class MarkdownRepositoryTests
     {
+        private Markdown markdown;
         [SetUp]
         public void Setup()
         {
-
+            markdown = new Markdown
+            {
+                ProductName = "Can of soup",
+                Amount = 0.20f
+            };
         }
 
         [Test]
@@ -22,6 +27,18 @@ namespace ProductServiceTests
             var priceList = markdownRepository.GetAll();
 
             Assert.NotNull(priceList);
+        }
+
+        [Test]
+        public void SaveAddsMarkdownToList()
+        {
+            IRepository<Markdown> markdownRepository = new MarkdownRepository();
+
+            markdownRepository.Save(markdown);
+
+            var priceList = markdownRepository.GetAll();
+
+            Assert.AreEqual(priceList.Count, 1);
         }
     }
 }

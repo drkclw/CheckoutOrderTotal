@@ -26,7 +26,7 @@ namespace ProductService.Models
 
         public void Save(Markdown saveThis)
         {
-            throw new NotImplementedException();
+            markdownList.Add(saveThis);
         }
         public void Delete(Markdown deleteThis)
         {
