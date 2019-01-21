@@ -38,6 +38,7 @@ namespace ProductServiceTests
                 Unit = Unit.LBS
             };
 
+            productList = new List<Product>();
             productList.Add(validProduct);
             productList.Add(nonExistentProduct);
         }
