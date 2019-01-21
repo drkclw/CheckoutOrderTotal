@@ -70,5 +70,18 @@ namespace ProductServiceTests
             Assert.AreEqual(priceList.Count, 1);
             Assert.AreEqual(priceList[0].Type, SpecialType.Restriction);
         }
+
+        [Test]
+        public void GetSpecialsByProductNameWithExistingProductNameReturnsRightSpecial()
+        {
+            IRepository<ISpecial> specialsRepository = new SpecialsRepository();
+
+            specialsRepository.Save(priceSpecial);
+
+            var priceSpecialResult = (PriceSpecial)specialsRepository.GetByProductName("Can of soup");
+
+            Assert.AreEqual(priceSpecialResult.ProductName, "Can of soup");
+            Assert.AreEqual(priceSpecialResult.Price, 5);
+        }
     }
 }

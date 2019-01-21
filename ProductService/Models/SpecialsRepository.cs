@@ -20,7 +20,16 @@ namespace ProductService.Models
         }
         public ISpecial GetByProductName(string productName)
         {
-            throw new NotImplementedException();
+            var specialsDict = specialsList.ToDictionary(p => p.ProductName, p => p);
+
+            if (specialsDict.ContainsKey(productName))
+            {
+                return specialsDict[productName];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public void Save(ISpecial saveThis)
