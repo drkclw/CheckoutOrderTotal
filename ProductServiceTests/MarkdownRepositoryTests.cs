@@ -53,5 +53,18 @@ namespace ProductServiceTests
             Assert.AreEqual(markdownList[0].ProductName, "Can of soup");
             Assert.AreEqual(markdownList[0].Amount, 0.2f);
         }
+
+        [Test]
+        public void GetByProductNameWithExistingProductNameReturnsRightMarkdown()
+        {
+            IRepository<Markdown> markdownRepository = new MarkdownRepository();
+
+            markdownRepository.Save(markdown);
+
+            var markdownResult = markdownRepository.GetByProductName("Can of soup");
+
+            Assert.AreEqual(markdownResult.ProductName, "Can of soup");
+            Assert.AreEqual(markdownResult.Amount, 0.2f);
+        }
     }
 }

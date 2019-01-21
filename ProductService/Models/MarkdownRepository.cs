@@ -21,7 +21,16 @@ namespace ProductService.Models
 
         public Markdown GetByProductName(string productName)
         {
-            throw new NotImplementedException();
+            var markdownDict = markdownList.ToDictionary(p => p.ProductName, p => p);
+
+            if (markdownDict.ContainsKey(productName))
+            {
+                return markdownDict[productName];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public void Save(Markdown saveThis)
