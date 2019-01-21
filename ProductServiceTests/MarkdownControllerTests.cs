@@ -238,5 +238,25 @@ namespace ProductServiceTests
 
             Assert.AreEqual(contentResult.Value, 0.45f);
         }
+
+        [Test]
+        public void GetNonExistentMarkdownReturnsZero()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.GetByProductName(nonExistentMarkdownWithExistingPrice.ProductName)).Returns((Markdown)null);
+
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
+                mockPriceRepository.Object);
+
+            string productName = "Bananas";
+
+            var result = markdownController.GetMarkdown(productName);
+            var contentResult = result as ActionResult<float>;
+
+            Assert.AreEqual(contentResult.Value, 0);
+        }
     }
 }
