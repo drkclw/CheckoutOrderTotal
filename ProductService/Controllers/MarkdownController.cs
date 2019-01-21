@@ -78,5 +78,11 @@ namespace ProductService.Controllers
                 return "Error: Cannot update markdown for a product that doesn't have a price.";
             }
         }
+
+        [HttpGet("{productName}")]
+        public ActionResult<float> GetMarkdown(string productName)
+        {
+            return 0.45f;
+        }
     }
 }
