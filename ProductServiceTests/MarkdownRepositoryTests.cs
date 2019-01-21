@@ -115,5 +115,19 @@ namespace ProductServiceTests
 
             Assert.IsFalse(updated);
         }
+
+        [Test]
+        public void UpdateWithExistingPriceUpdatesRightMarkdown()
+        {
+            IRepository<Markdown> markdownRepository = new MarkdownRepository();
+
+            markdownRepository.Save(markdown);
+            bool updated = markdownRepository.Update(updatedMarkdown);
+            var markdownList = markdownRepository.GetAll();
+
+            Assert.IsTrue(updated);
+            Assert.AreEqual(markdownList[0].ProductName, "Can of soup");
+            Assert.AreEqual(markdownList[0].Amount, 0.45f);
+        }
     }
 }
