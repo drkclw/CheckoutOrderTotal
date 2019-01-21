@@ -10,6 +10,7 @@ namespace ProductServiceTests
     {
         private Markdown markdown;
         private Markdown updatedMarkdown;
+        private Markdown updatedNonExistentMarkdown;
 
         [SetUp]
         public void Setup()
@@ -23,6 +24,12 @@ namespace ProductServiceTests
             updatedMarkdown = new Markdown
             {
                 ProductName = "Can of soup",
+                Amount = 0.45f
+            };
+
+            updatedNonExistentMarkdown = new Markdown
+            {
+                ProductName = "Bananas",
                 Amount = 0.45f
             };
         }
@@ -96,6 +103,17 @@ namespace ProductServiceTests
             bool updated = markdownRepository.Update(updatedMarkdown);
 
             Assert.IsTrue(updated);
+        }
+
+        [Test]
+        public void UpdateWithNonExistentPriceReturnsFalse()
+        {
+            IRepository<Markdown> markdownRepository = new MarkdownRepository();
+
+            markdownRepository.Save(markdown);
+            bool updated = markdownRepository.Update(updatedNonExistentMarkdown);
+
+            Assert.IsFalse(updated);
         }
     }
 }
