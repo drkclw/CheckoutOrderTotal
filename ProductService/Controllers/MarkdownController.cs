@@ -82,7 +82,8 @@ namespace ProductService.Controllers
         [HttpGet("{productName}")]
         public ActionResult<float> GetMarkdown(string productName)
         {
-            return 0.45f;
+            var markdown = _markdownRepository.GetByProductName(productName);
+            return markdown.Amount;
         }
     }
 }
