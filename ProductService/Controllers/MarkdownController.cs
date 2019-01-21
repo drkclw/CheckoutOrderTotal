@@ -55,9 +55,12 @@ namespace ProductService.Controllers
         }
 
         [HttpPut]
-        public ActionResult<string> UpdateMarkdown([FromBody] Markdown product)
+        public ActionResult<string> UpdateMarkdown([FromBody] Markdown markdown)
         {
-            return "Success.";
+            if (_markdownRepository.Update(markdown))
+                return "Success.";
+            else
+                return "Success.";
         }
     }
 }
