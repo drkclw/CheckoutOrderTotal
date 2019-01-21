@@ -9,6 +9,8 @@ namespace ProductServiceTests
     public class MarkdownRepositoryTests
     {
         private Markdown markdown;
+        private Markdown updatedMarkdown;
+
         [SetUp]
         public void Setup()
         {
@@ -16,6 +18,12 @@ namespace ProductServiceTests
             {
                 ProductName = "Can of soup",
                 Amount = 0.20f
+            };
+
+            updatedMarkdown = new Markdown
+            {
+                ProductName = "Can of soup",
+                Amount = 0.45f
             };
         }
 
@@ -77,6 +85,17 @@ namespace ProductServiceTests
             var markdownResult = markdownRepository.GetByProductName("Bananas");
 
             Assert.IsNull(markdownResult);
+        }
+
+        [Test]
+        public void UpdateWithExistingMarkdownReturnsTrue()
+        {
+            IRepository<Markdown> markdownRepository = new MarkdownRepository();
+
+            markdownRepository.Save(markdown);
+            bool updated = markdownRepository.Update(updatedMarkdown);
+
+            Assert.IsTrue(updated);
         }
     }
 }

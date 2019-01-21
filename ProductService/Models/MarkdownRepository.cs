@@ -44,7 +44,10 @@ namespace ProductService.Models
 
         public bool Update(Markdown updateThis)
         {
-            throw new NotImplementedException();
+            var markdownDict = markdownList.ToDictionary(p => p.ProductName, p => p);
+            
+            markdownDict[updateThis.ProductName].Amount = updateThis.Amount;
+            return true;            
         }
     }
 }
