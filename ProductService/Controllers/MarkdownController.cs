@@ -42,8 +42,10 @@ namespace ProductService.Controllers
                 _markdownRepository.Save(markdown);
                 return "Success";
             }
-
-            return "Success";            
+            else
+            {
+                return "Error: Markdown must be smaller than price.";
+            }
         }
     }
 }

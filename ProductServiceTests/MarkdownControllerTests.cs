@@ -16,6 +16,7 @@ namespace ProductServiceTests
         private List<Product> productList;
         private Product canOfSoup;
         private Product bananas;
+        private Markdown invalidMarkdown;
 
         [SetUp]
         public void Setup()
@@ -33,7 +34,12 @@ namespace ProductServiceTests
                 Unit = Unit.EA
             };
 
-            
+            invalidMarkdown = new Markdown
+            {
+                ProductName = "Can of soup",
+                Amount = 2.55f
+            };
+
             bananas = new Product
             {
                 ProductName = "Bananas",
@@ -82,6 +88,24 @@ namespace ProductServiceTests
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Success");
-        }        
+        }
+
+        [Test]
+        public void AddingInvalidMarkdownReturnsErrorMessage()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.Save(invalidMarkdown));
+
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            MarkdownController priceController = new MarkdownController(mockMarkdownRepository.Object,
+                mockPriceRepository.Object);
+
+            var result = priceController.AddMarkdown(invalidMarkdown);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Markdown must be smaller than price.");
+        }
     }
 }
