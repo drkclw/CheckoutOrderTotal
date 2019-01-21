@@ -55,7 +55,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void GetByProductNameWithExistingProductNameReturnsRightMarkdown()
+        public void GetMarkdownByProductNameWithExistingProductNameReturnsRightMarkdown()
         {
             IRepository<Markdown> markdownRepository = new MarkdownRepository();
 
@@ -65,6 +65,18 @@ namespace ProductServiceTests
 
             Assert.AreEqual(markdownResult.ProductName, "Can of soup");
             Assert.AreEqual(markdownResult.Amount, 0.2f);
+        }
+
+        [Test]
+        public void GetMarkdownByProductNameWithNonExistentProductNameReturnsNull()
+        {
+            IRepository<Markdown> markdownRepository = new MarkdownRepository();
+
+            markdownRepository.Save(markdown);
+
+            var markdownResult = markdownRepository.GetByProductName("Bananas");
+
+            Assert.IsNull(markdownResult);
         }
     }
 }
