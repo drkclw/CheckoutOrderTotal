@@ -59,16 +59,23 @@ namespace ProductService.Controllers
         {
             var priceDict = _priceRepository.GetAll().ToDictionary(p => p.ProductName, p => p);
 
-            if (priceDict[markdown.ProductName].Price > markdown.Amount)
+            if (priceDict.ContainsKey(markdown.ProductName))
             {
-                if (_markdownRepository.Update(markdown))
-                    return "Success.";
+                if (priceDict[markdown.ProductName].Price > markdown.Amount)
+                {
+                    if (_markdownRepository.Update(markdown))
+                        return "Success.";
+                    else
+                        return "Success.";
+                }
                 else
-                    return "Success.";
+                {
+                    return "Error: Markdown must be smaller than price.";
+                }
             }
             else
             {
-                return "Error: Markdown must be smaller than price.";
+                return "Error: Cannot update markdown for a product that doesn't have a price.";
             }
         }
     }
