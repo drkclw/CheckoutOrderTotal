@@ -16,7 +16,7 @@ namespace ProductService.Controllers
 
         public SpecialsController(IRepository<ISpecial> specialsRepository)
         {
-            _specialsRepository = specialsRepository;            
+            _specialsRepository = specialsRepository;
         }
 
         [HttpGet]
@@ -24,6 +24,12 @@ namespace ProductService.Controllers
         public ActionResult<IEnumerable<ISpecial>> GetAllSpecials()
         {
             return _specialsRepository.GetAll().ToList();
+        }
+
+        [HttpPost]
+        public ActionResult<string> AddSpecial([FromBody] ISpecial special)
+        {
+            return "Success.";
         }
     }
 }
