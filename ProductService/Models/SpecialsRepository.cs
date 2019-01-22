@@ -48,6 +48,7 @@ namespace ProductService.Models
             if (specialsDict.ContainsKey(updateThis.ProductName))
             {
                 specialsDict[updateThis.ProductName] = updateThis;
+                specialsList = specialsDict.Values.ToList();
                 return true;
             }
             else

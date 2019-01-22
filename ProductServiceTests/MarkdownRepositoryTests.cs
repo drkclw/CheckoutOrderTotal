@@ -106,7 +106,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void UpdateWithNonExistentPriceReturnsFalse()
+        public void UpdateWithNonExistentMarkdownReturnsFalse()
         {
             IRepository<Markdown> markdownRepository = new MarkdownRepository();
 
@@ -117,7 +117,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void UpdateWithExistingPriceUpdatesRightMarkdown()
+        public void UpdateWithExistingMarkdownUpdatesRightMarkdown()
         {
             IRepository<Markdown> markdownRepository = new MarkdownRepository();
 

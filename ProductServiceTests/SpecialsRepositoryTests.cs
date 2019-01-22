@@ -125,7 +125,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void UpdateWithNonExistentPriceReturnsFalse()
+        public void UpdateWithNonExistentSpecialReturnsFalse()
         {
             IRepository<ISpecial> specialsRepository = new SpecialsRepository();
 
@@ -133,6 +133,21 @@ namespace ProductServiceTests
             bool updated = specialsRepository.Update(nonExistentPriceSpecial);
 
             Assert.IsFalse(updated);
+        }
+
+        [Test]
+        public void UpdateWithExistingSpecialUpdatesRightSpecial()
+        {
+            IRepository<ISpecial> specialsRepository = new SpecialsRepository();
+
+            specialsRepository.Save(priceSpecial);
+            bool updated = specialsRepository.Update(updatedPriceSpecial);
+            var specialsList = specialsRepository.GetAll();
+            var updatedSpecial = (PriceSpecial)specialsList[0];
+
+            Assert.IsTrue(updated);
+            Assert.AreEqual(updatedSpecial.ProductName, "Can of soup");
+            Assert.AreEqual(updatedSpecial.Price, 6);
         }
     }
 }
