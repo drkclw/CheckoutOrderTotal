@@ -22,7 +22,7 @@ namespace ProductService.Controllers
             _priceRepository = priceRepository;
         }
 
-        // GET api/allprices
+        // GET api/allmarkdowns
         [HttpGet]
         [Route("allmarkdowns")]
         public ActionResult<IEnumerable<Markdown>> GetAllMarkdowns()
