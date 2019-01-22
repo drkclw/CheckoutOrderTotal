@@ -123,5 +123,16 @@ namespace ProductServiceTests
 
             Assert.IsTrue(updated);
         }
+
+        [Test]
+        public void UpdateWithNonExistentPriceReturnsFalse()
+        {
+            IRepository<ISpecial> specialsRepository = new SpecialsRepository();
+
+            specialsRepository.Save(priceSpecial);
+            bool updated = specialsRepository.Update(nonExistentPriceSpecial);
+
+            Assert.IsFalse(updated);
+        }
     }
 }
