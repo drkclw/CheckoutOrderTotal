@@ -112,5 +112,16 @@ namespace ProductServiceTests
 
             Assert.IsTrue(updated);
         }
+
+        [Test]
+        public void UpdateWithExistingSpecialOfDifferentTypeReturnsTrue()
+        {
+            IRepository<ISpecial> specialsRepository = new SpecialsRepository();
+
+            specialsRepository.Save(priceSpecial);
+            bool updated = specialsRepository.Update(limitSpecialNoLimit);
+
+            Assert.IsTrue(updated);
+        }
     }
 }
