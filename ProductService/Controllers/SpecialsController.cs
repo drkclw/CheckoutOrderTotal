@@ -27,8 +27,21 @@ namespace ProductService.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> AddSpecial([FromBody] ISpecial special)
+        public ActionResult<string> AddSpecial([FromBody] SpecialRequest specialRequest)
         {
+            if(specialRequest.Type == SpecialType.Price)
+            {
+                var priceSpecial = new PriceSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                    specialRequest.IsActive, specialRequest.Price);
+                if(priceSpecial.PurchaseQty > 1)
+                {
+                    if(priceSpecial.Price > 0)
+                    {
+                        _specialsRepository.Save(priceSpecial);
+                        return "Success.";
+                    }
+                }
+            }
             return "Success.";
         }
     }

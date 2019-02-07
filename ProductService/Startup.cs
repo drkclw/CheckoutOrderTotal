@@ -26,7 +26,8 @@ namespace ProductService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddTransient<IRepository<Product>, PriceRepository>();
+            services.AddSingleton<IRepository<Product>, PriceRepository>();
+            services.AddSingleton<IRepository<ISpecial>, SpecialsRepository>();          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

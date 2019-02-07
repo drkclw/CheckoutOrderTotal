@@ -13,11 +13,19 @@ namespace ProductServiceTests
     {        
         private List<ISpecial> specialsList;
         private PriceSpecial validPriceSpecial;
+        private SpecialRequest validPriceSpecialRequest;
 
         [SetUp]
         public void Setup()
         {
             validPriceSpecial = new PriceSpecial("Can of soup", 2, true, 5);
+            validPriceSpecialRequest = new SpecialRequest
+            {
+                ProductName = "Can of soup",
+                PurchaseQty = 2,
+                IsActive = true,
+                Price = 5
+            };
 
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
@@ -37,14 +45,28 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void AddingValidMarkdownReturnsSuccess()
+        public void AddingValidSpecialReturnsSuccess()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.Save(validPriceSpecial));
             
-            SpecialsController markdownController = new SpecialsController(mockSpecialsRepository.Object);
+            SpecialsController specialsController = new SpecialsController(mockSpecialsRepository.Object);
 
-            var result = markdownController.AddSpecial(validPriceSpecial);
+            var result = specialsController.AddSpecial(validPriceSpecialRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Success.");
+        }
+
+        [Test]
+        public void AddingValidPriceSpecialReturnsSuccess()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.Save(validPriceSpecial));
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsRepository.Object);
+
+            var result = specialsController.AddSpecial(validPriceSpecialRequest);
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Success.");

@@ -32,8 +32,8 @@ namespace ProductService.Models
 
         public int DiscountQty { get; }
 
-        public float DiscountAmount { get; set; }
+        public float DiscountAmount { get; }
 
-        public RestrictionType RestrictionType { get; set; }
+        public RestrictionType RestrictionType { get; }
     }
 }
