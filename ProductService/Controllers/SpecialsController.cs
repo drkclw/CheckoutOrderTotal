@@ -40,6 +40,10 @@ namespace ProductService.Controllers
                         _specialsRepository.Save(priceSpecial);
                         return "Success.";
                     }
+                    else
+                    {
+                        return "Error: Price must be bigger than 0.";
+                    }
                 }
             }
             return "Success.";

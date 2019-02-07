@@ -14,6 +14,7 @@ namespace ProductServiceTests
         private List<ISpecial> specialsList;
         private PriceSpecial validPriceSpecial;
         private SpecialRequest validPriceSpecialRequest;
+        private SpecialRequest zeroPriceSpecialRequest;
 
         [SetUp]
         public void Setup()
@@ -23,8 +24,18 @@ namespace ProductServiceTests
             {
                 ProductName = "Can of soup",
                 PurchaseQty = 2,
+                IsActive = true,                
+                Price = 5,
+                Type = SpecialType.Price
+            };
+
+            zeroPriceSpecialRequest = new SpecialRequest
+            {
+                ProductName = "Can of soup",
+                PurchaseQty = 2,
                 IsActive = true,
-                Price = 5
+                Price = 0,
+                Type = SpecialType.Price
             };
 
             specialsList = new List<ISpecial>();
@@ -70,6 +81,20 @@ namespace ProductServiceTests
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Success.");
+        }
+
+        [Test]
+        public void AddingPriceSpecialWithZeroPriceReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.Save(validPriceSpecial));
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsRepository.Object);
+
+            var result = specialsController.AddSpecial(zeroPriceSpecialRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Price must be bigger than 0.");
         }
     }
 }
