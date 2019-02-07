@@ -45,6 +45,10 @@ namespace ProductService.Controllers
                         return "Error: Price must be bigger than 0.";
                     }
                 }
+                else
+                {
+                    return "Error: Purchase quantity must be bigger than 1.";
+                }
             }
             return "Success.";
         }

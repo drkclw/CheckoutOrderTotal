@@ -15,6 +15,7 @@ namespace ProductServiceTests
         private PriceSpecial validPriceSpecial;
         private SpecialRequest validPriceSpecialRequest;
         private SpecialRequest zeroPriceSpecialRequest;
+        private SpecialRequest lessThanTwoQuantityPriceSpecialRequest;
 
         [SetUp]
         public void Setup()
@@ -35,6 +36,15 @@ namespace ProductServiceTests
                 PurchaseQty = 2,
                 IsActive = true,
                 Price = 0,
+                Type = SpecialType.Price
+            };
+
+            lessThanTwoQuantityPriceSpecialRequest = new SpecialRequest
+            {
+                ProductName = "Can of soup",
+                PurchaseQty = 1,
+                IsActive = true,
+                Price = 5,
                 Type = SpecialType.Price
             };
 
@@ -95,6 +105,20 @@ namespace ProductServiceTests
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Error: Price must be bigger than 0.");
+        }
+
+        [Test]
+        public void AddingPriceSpecialWithPurchaseQuantityLessThanTwoReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.Save(validPriceSpecial));
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsRepository.Object);
+
+            var result = specialsController.AddSpecial(lessThanTwoQuantityPriceSpecialRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Purchase quantity must be bigger than 1.");
         }
     }
 }
