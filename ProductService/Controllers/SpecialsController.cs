@@ -49,8 +49,11 @@ namespace ProductService.Controllers
                 {
                     return "Error: Purchase quantity must be bigger than 1.";
                 }
+            }else if(specialRequest.Type == SpecialType.Limit)
+            {
+                return "Success.";
             }
-            return "Success.";
+            return "Special type not found.";
         }
     }
 }
