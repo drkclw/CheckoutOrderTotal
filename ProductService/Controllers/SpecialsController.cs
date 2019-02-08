@@ -77,6 +77,9 @@ namespace ProductService.Controllers
                 {
                     return "Error: Limit must be bigger than 0.";
                 }
+            }else if(specialRequest.Type == SpecialType.Restriction)
+            {
+                return "Success.";
             }
 
             return "Special type not found.";
