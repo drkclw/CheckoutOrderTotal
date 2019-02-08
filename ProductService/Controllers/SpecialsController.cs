@@ -55,11 +55,18 @@ namespace ProductService.Controllers
                 {
                     if (specialRequest.DiscountAmount > 0)
                     {
-                        var limitSpecial = new LimitSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
-                            specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount, specialRequest.Limit);
+                        if (specialRequest.Limit > specialRequest.PurchaseQty)
+                        {
+                            var limitSpecial = new LimitSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                                specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount, specialRequest.Limit);
 
-                        _specialsRepository.Save(limitSpecial);
-                        return "Success.";
+                            _specialsRepository.Save(limitSpecial);
+                            return "Success.";
+                        }
+                        else
+                        {
+                            return "Error: Limit must be bigger than purchase quantity.";
+                        }
                     }
                     else
                     {
