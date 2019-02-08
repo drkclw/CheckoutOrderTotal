@@ -51,11 +51,18 @@ namespace ProductService.Controllers
                 }
             }else if(specialRequest.Type == SpecialType.Limit)
             {
-                var limitSpecial = new LimitSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
-                    specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount, specialRequest.Limit);
+                if (specialRequest.Limit > 0)
+                {
+                    var limitSpecial = new LimitSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                        specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount, specialRequest.Limit);
 
-                _specialsRepository.Save(limitSpecial);
-                return "Success.";
+                    _specialsRepository.Save(limitSpecial);
+                    return "Success.";
+                }
+                else
+                {
+                    return "Error: Limit must be bigger than 0.";
+                }
             }
             return "Special type not found.";
         }

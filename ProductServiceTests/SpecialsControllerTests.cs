@@ -18,6 +18,7 @@ namespace ProductServiceTests
         private SpecialRequest lessThanTwoQuantityPriceSpecialRequest;
         private LimitSpecial validLimitSpecial;
         private SpecialRequest validLimitSpecialRequest;
+        private SpecialRequest limitSpecialWithoutLimitRequest;
 
         [SetUp]
         public void Setup()
@@ -63,8 +64,20 @@ namespace ProductServiceTests
                 Type = SpecialType.Limit
             };
 
+            limitSpecialWithoutLimitRequest = new SpecialRequest
+            {
+                ProductName = "Can of beans",
+                PurchaseQty = 2,
+                IsActive = true,
+                DiscountQty = 1,
+                DiscountAmount = 0.5f,
+                Limit = 0,
+                Type = SpecialType.Limit
+            };
+
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
+            specialsList.Add(validLimitSpecial);
         }
 
         [Test]
@@ -148,6 +161,20 @@ namespace ProductServiceTests
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Success.");
+        }
+
+        [Test]
+        public void AddingLimitSpecialWithoutLimitReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.Save(validLimitSpecial));
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsRepository.Object);
+
+            var result = specialsController.AddSpecial(limitSpecialWithoutLimitRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Limit must be bigger than 0.");
         }
     }
 }
