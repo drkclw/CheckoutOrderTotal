@@ -83,16 +83,22 @@ namespace ProductService.Controllers
             {
                 if (specialRequest.DiscountAmount > 0)
                 {
-
-                    var restrictionSpecial = new RestrictionSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
-                        specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount,
-                        specialRequest.RestrictionType);
-                    _specialsRepository.Save(restrictionSpecial);
-                    return "Success.";
+                    if (specialRequest.DiscountQty > 0)
+                    {
+                        var restrictionSpecial = new RestrictionSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                            specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount,
+                            specialRequest.RestrictionType);
+                        _specialsRepository.Save(restrictionSpecial);
+                        return "Success.";
+                    }
+                    else
+                    {
+                        return "Error: Discount quantity must be bigger than zero.";
+                    }
                 }
                 else
                 {
-                    return "Error: Discount must be bigger than zero.";
+                    return "Error: Discount amount must be bigger than zero.";
                 }
             }
 
