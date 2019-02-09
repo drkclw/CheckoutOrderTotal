@@ -4,6 +4,7 @@ using NUnit.Framework;
 using ProductService.Controllers;
 using ProductService.Models;
 using System.Collections.Generic;
+using ProductService.Models.Prices;
 
 namespace ProductServiceTests
 {

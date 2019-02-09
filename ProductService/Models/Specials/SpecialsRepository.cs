@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProductService.Models
+namespace ProductService.Models.Specials
 {
     public class SpecialsRepository : IRepository<ISpecial>
     {

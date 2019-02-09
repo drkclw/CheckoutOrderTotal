@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProductService.Models;
+using ProductService.Models.Prices;
+using ProductService.Models.Specials;
 
 namespace ProductService
 {

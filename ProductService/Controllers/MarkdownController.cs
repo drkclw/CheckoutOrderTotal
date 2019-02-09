@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProductService.Models.Markdowns;
+using ProductService.Models.Prices;
 using ProductService.Models;
 
 namespace ProductService.Controllers

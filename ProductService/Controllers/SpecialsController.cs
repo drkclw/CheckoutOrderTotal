@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.Models;
+using ProductService.Models.Specials;
+using ProductService.Models.Prices;
 
 namespace ProductService.Controllers
 {

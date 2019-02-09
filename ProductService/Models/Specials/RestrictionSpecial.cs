@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProductService.Models
+namespace ProductService.Models.Specials
 {
     /// <summary>
     /// This class will accomodate specials with the format Buy N, get M of equal or lesser value for %X off

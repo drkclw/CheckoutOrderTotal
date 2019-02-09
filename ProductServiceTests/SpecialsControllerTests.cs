@@ -6,6 +6,7 @@ using ProductService.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ProductService.Models.Specials;
 
 namespace ProductServiceTests
 {
