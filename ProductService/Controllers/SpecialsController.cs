@@ -81,7 +81,19 @@ namespace ProductService.Controllers
                 }
             }else if(specialRequest.Type == SpecialType.Restriction)
             {
-                return "Success.";
+                if (specialRequest.DiscountAmount > 0)
+                {
+
+                    var restrictionSpecial = new RestrictionSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                        specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount,
+                        specialRequest.RestrictionType);
+                    _specialsRepository.Save(restrictionSpecial);
+                    return "Success.";
+                }
+                else
+                {
+                    return "Error: Discount must be bigger than zero.";
+                }
             }
 
             return "Special type not found.";

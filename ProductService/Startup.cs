@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using ProductService.Models;
 using ProductService.Models.Prices;
 using ProductService.Models.Specials;
+using ProductService.Models.Markdowns;
 
 namespace ProductService
 {
@@ -29,7 +30,8 @@ namespace ProductService
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IRepository<Product>, PriceRepository>();
-            services.AddSingleton<IRepository<ISpecial>, SpecialsRepository>();          
+            services.AddSingleton<IRepository<ISpecial>, SpecialsRepository>();
+            services.AddSingleton<IRepository<Markdown>, MarkdownRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
