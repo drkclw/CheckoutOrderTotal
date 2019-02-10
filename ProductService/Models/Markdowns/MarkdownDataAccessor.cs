@@ -38,9 +38,10 @@ namespace ProductService.Models.Markdowns
             }
         }
 
-        public void Save(Markdown saveThis)
+        public string Save(Markdown saveThis)
         {
-            throw new NotImplementedException();
+            _markdownRepository.Save(saveThis);
+            return "Success";
         }
 
         public void Delete(Markdown deleteThis)
@@ -48,7 +49,7 @@ namespace ProductService.Models.Markdowns
             throw new NotImplementedException();
         }
 
-        public bool Update(Markdown updateThis)
+        public string Update(Markdown updateThis)
         {
             throw new NotImplementedException();
         }

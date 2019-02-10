@@ -9,8 +9,8 @@ namespace ProductService.Models
     {
         IList<T> GetAll();
         T GetByProductName(string productName);
-        void Save(T saveThis);
+        string Save(T saveThis);
         void Delete(T deleteThis);
-        bool Update(T updateThis);
+        string Update(T updateThis);
     }
 }
