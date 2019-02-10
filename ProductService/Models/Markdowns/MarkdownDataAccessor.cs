@@ -26,7 +26,16 @@ namespace ProductService.Models.Markdowns
 
         public float GetMarkdownAmount(string productName)
         {
-            return 0.45f;
+            var markdown = _markdownRepository.GetByProductName(productName);
+
+            if (markdown == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return markdown.Amount;
+            }
         }
 
         public void Save(Markdown saveThis)

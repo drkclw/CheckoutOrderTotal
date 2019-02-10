@@ -51,7 +51,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void GetMarkdownAmountWithExistingMarkdownReturnsMarkdownAmountl()
+        public void GetMarkdownAmountWithExistingMarkdownReturnsMarkdownAmount()
         {
             Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
             mockMarkdownRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validMarkdown);
@@ -60,6 +60,18 @@ namespace ProductServiceTests
             var markdownAmount = markdownDataAccessor.GetMarkdownAmount("Can of soup");
 
             Assert.AreEqual(markdownAmount, 0.45f);
+        }
+
+        [Test]
+        public void GetMarkdownAmountWithExistingMarkdownReturnsRightMarkdownAmount()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validMarkdown);
+
+            MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object);
+            var markdownAmount = markdownDataAccessor.GetMarkdownAmount("Can of soup");
+
+            Assert.AreEqual(markdownAmount, validMarkdown.Amount);
         }
     }
 }
