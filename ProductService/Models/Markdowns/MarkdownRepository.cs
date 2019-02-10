@@ -21,16 +21,7 @@ namespace ProductService.Models.Markdowns
 
         public Markdown GetByProductName(string productName)
         {
-            var markdownDict = markdownList.ToDictionary(p => p.ProductName, p => p);
-
-            if (markdownDict.ContainsKey(productName))
-            {
-                return markdownDict[productName];
-            }
-            else
-            {
-                return null;
-            }
+            return markdownList.FirstOrDefault(m => m.ProductName == productName);
         }
 
         public void Save(Markdown saveThis)

@@ -21,7 +21,7 @@ namespace ProductService.Models.Markdowns
 
         public Markdown GetByProductName(string productName)
         {
-            throw new NotImplementedException();
+            return _markdownRepository.GetByProductName(productName);
         }
 
         public void Save(Markdown saveThis)

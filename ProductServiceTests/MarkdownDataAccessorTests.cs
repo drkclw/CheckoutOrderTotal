@@ -37,5 +37,17 @@ namespace ProductServiceTests
 
             Assert.NotNull(markdowns);
         }
+
+        [Test]
+        public void GetByProductNameWithExistingMarkdownReturnsMarkdown()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validMarkdown);
+
+            MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object);
+            var markdown = markdownDataAccessor.GetByProductName("Can of soup");
+
+            Assert.NotNull(markdown);
+        }
     }
 }
