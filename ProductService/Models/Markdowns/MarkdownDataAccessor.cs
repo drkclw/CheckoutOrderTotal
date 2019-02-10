@@ -7,9 +7,16 @@ namespace ProductService.Models.Markdowns
 {
     public class MarkdownDataAccessor : IDataAccessor<Markdown>
     {
+        private IRepository<Markdown> _markdownRepository;
+        
+        public MarkdownDataAccessor(IRepository<Markdown> markdownRepository)
+        {
+            _markdownRepository = markdownRepository;
+        }
+
         public IList<Markdown> GetAll()
         {
-            return new List<Markdown>();
+            return _markdownRepository.GetAll();
         }
 
         public Markdown GetByProductName(string productName)
