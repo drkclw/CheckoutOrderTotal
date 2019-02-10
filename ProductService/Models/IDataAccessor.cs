@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ProductService.Models
 {
-    public interface IRepository<T>
+    public interface IDataAccessor<T>
     {
         IList<T> GetAll();
         T GetByProductName(string productName);

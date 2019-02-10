@@ -137,7 +137,7 @@ namespace ProductServiceTests
                 DiscountAmount = 0.5f,
                 RestrictionType = RestrictionType.Lesser,
                 Type = SpecialType.Restriction
-            };
+            };            
 
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
@@ -310,6 +310,6 @@ namespace ProductServiceTests
 
 
             Assert.AreEqual(contentResult.Value, "Error: Discount quantity must be bigger than zero.");
-        }
+        }       
     }
 }
