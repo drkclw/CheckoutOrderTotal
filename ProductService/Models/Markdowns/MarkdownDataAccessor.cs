@@ -24,6 +24,11 @@ namespace ProductService.Models.Markdowns
             return _markdownRepository.GetByProductName(productName);
         }
 
+        public float GetMarkdownAmount(string productName)
+        {
+            return 0.45f;
+        }
+
         public void Save(Markdown saveThis)
         {
             throw new NotImplementedException();
