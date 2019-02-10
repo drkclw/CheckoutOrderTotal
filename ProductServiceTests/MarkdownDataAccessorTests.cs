@@ -73,5 +73,17 @@ namespace ProductServiceTests
 
             Assert.AreEqual(markdownAmount, validMarkdown.Amount);
         }
+
+        [Test]
+        public void GetMarkdownAmountWithNonExistentMarkdownReturnsZero()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.GetByProductName("Bananas")).Returns((Markdown)null);
+
+            MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object);
+            var markdownAmount = markdownDataAccessor.GetMarkdownAmount("Bananas");
+
+            Assert.AreEqual(markdownAmount, 0);
+        }
     }
 }
