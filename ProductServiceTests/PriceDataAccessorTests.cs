@@ -28,7 +28,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void GetAllPricesReturnsListOfMarkdowns()
+        public void GetAllPricesReturnsListOfPrices()
         {            
             Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
             mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
@@ -37,6 +37,18 @@ namespace ProductServiceTests
             var prices = priceDataAccessor.GetAll();
 
             Assert.NotNull(prices);
+        }
+
+        [Test]
+        public void GetByProductNameWithExistingPriceReturnsPrice()
+        {
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validProduct);
+
+            PriceDataAccessor priceDataAccessor = new PriceDataAccessor(mockPriceRepository.Object);
+            var price = priceDataAccessor.GetByProductName("Can of soup");
+
+            Assert.NotNull(price);
         }
     }
 }

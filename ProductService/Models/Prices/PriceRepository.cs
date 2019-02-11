@@ -21,16 +21,7 @@ namespace ProductService.Models.Prices
 
         public Product GetByProductName(string productName)
         {
-            var productDict = priceList.ToDictionary(p => p.ProductName, p => p);
-
-            if (productDict.ContainsKey(productName))
-            {
-                return productDict[productName];
-            }
-            else
-            {
-                return null;
-            }
+            return priceList.FirstOrDefault(p => p.ProductName == productName);
         }
         public void Save(Product saveThis)
         {

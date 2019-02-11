@@ -20,7 +20,7 @@ namespace ProductService.Models.Prices
         }
         public Product GetByProductName(string productName)
         {
-            throw new NotImplementedException();
+            return _productRepository.GetByProductName(productName);
         }
 
         public string Save(Product saveThis)
