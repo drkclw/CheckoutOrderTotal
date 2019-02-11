@@ -170,7 +170,7 @@ namespace ProductServiceTests
 
             var result = markdownDataAccessor.Save(validMarkdown);                 
 
-            Assert.AreEqual(result, "Success");
+            Assert.AreEqual(result, "Success.");
         }
 
         [Test]

@@ -104,18 +104,7 @@ namespace ProductServiceTests
             bool updated = markdownRepository.Update(updatedMarkdown);
 
             Assert.IsTrue(updated);
-        }
-
-        [Test]
-        public void UpdateWithNonExistentMarkdownReturnsFalse()
-        {
-            IRepository<Markdown> markdownRepository = new MarkdownRepository();
-
-            markdownRepository.Save(markdown);
-            bool updated = markdownRepository.Update(updatedNonExistentMarkdown);
-
-            Assert.IsFalse(updated);
-        }
+        }        
 
         [Test]
         public void UpdateWithExistingMarkdownUpdatesRightMarkdown()
