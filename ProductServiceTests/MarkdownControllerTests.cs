@@ -80,15 +80,11 @@ namespace ProductServiceTests
 
         [Test]
         public void GetAllMarkdownsReturnsListOfMarkdowns()
-        {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.GetAll()).Returns(markdownList);
+        {            
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.GetAll()).Returns(markdownList);
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object, 
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
             var result = markdownController.GetAllMarkdowns();
             var contentResult = result as ActionResult<IEnumerable<Markdown>>;
 
@@ -98,32 +94,25 @@ namespace ProductServiceTests
         [Test]
         public void AddingValidMarkdownReturnsSuccess()
         {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.Save(validMarkdown));
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.Save(validMarkdown)).Returns("Success.");
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             var result = markdownController.AddMarkdown(validMarkdown);
             var contentResult = result as ActionResult<string>;
 
-            Assert.AreEqual(contentResult.Value, "Success");
+            Assert.AreEqual(contentResult.Value, "Success.");
         }
 
         [Test]
         public void AddingInvalidMarkdownReturnsErrorMessage()
         {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.Save(invalidMarkdown));
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.Save(invalidMarkdown))
+                .Returns("Error: Markdown must be smaller than price.");
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             var result = markdownController.AddMarkdown(invalidMarkdown);
             var contentResult = result as ActionResult<string>;
@@ -134,14 +123,11 @@ namespace ProductServiceTests
         [Test]
         public void AddingMarkdownForNonExistentReturnsErrorMessage()
         {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.Save(markdownForNonExistentPrice));
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.Save(markdownForNonExistentPrice))
+                .Returns("Error: Cannot add markdown for a product that doesn't have a price.");
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             var result = markdownController.AddMarkdown(markdownForNonExistentPrice);
             var contentResult = result as ActionResult<string>;
@@ -152,14 +138,11 @@ namespace ProductServiceTests
         [Test]
         public void UpdateValidExistingMarkdownReturnsSuccess()
         {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.Update(validMarkdown)).Returns(true);
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.Update(validMarkdown))
+                .Returns("Success.");
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             var result = markdownController.UpdateMarkdown(validMarkdown);
             var contentResult = result as ActionResult<string>;
@@ -170,14 +153,11 @@ namespace ProductServiceTests
         [Test]
         public void UpdateInvalidExistingMarkdownReturnsError()
         {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.Update(invalidMarkdown)).Returns(true);
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.Update(invalidMarkdown))
+                .Returns("Error: Markdown must be smaller than price.");
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             var result = markdownController.UpdateMarkdown(invalidMarkdown);
             var contentResult = result as ActionResult<string>;
@@ -188,14 +168,11 @@ namespace ProductServiceTests
         [Test]
         public void UpdateMarkdownForNonExistentPriceReturnsError()
         {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.Update(nonExistentMarkdownWithoutExistingPrice)).Returns(false);
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.Update(nonExistentMarkdownWithoutExistingPrice))
+                .Returns("Error: Cannot update markdown for a product that doesn't have a price.");
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             var result = markdownController.UpdateMarkdown(nonExistentMarkdownWithoutExistingPrice);
             var contentResult = result as ActionResult<string>;
@@ -206,14 +183,11 @@ namespace ProductServiceTests
         [Test]
         public void UpdateNonExistentMarkdownReturnsError()
         {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.Update(nonExistentMarkdownWithExistingPrice)).Returns(false);
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.Update(nonExistentMarkdownWithExistingPrice))
+                .Returns("Markdown does not exist, create markdown before updating price.");
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             var result = markdownController.UpdateMarkdown(nonExistentMarkdownWithExistingPrice);
             var contentResult = result as ActionResult<string>;
@@ -223,15 +197,12 @@ namespace ProductServiceTests
 
         [Test]
         public void GetExistentMarkdownReturnsMarkdown()
-        {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.GetByProductName(validMarkdown.ProductName)).Returns(validMarkdown);
+        {            
+            Mock<MarkdownDataAccessor> mockMarkdownDataAccessor = new Mock<MarkdownDataAccessor>();
+            mockMarkdownDataAccessor.Setup(x => x.GetMarkdownAmount(validMarkdown.ProductName))
+                .Returns(validMarkdown.Amount);
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             string productName = "Can of soup";
 
@@ -243,15 +214,12 @@ namespace ProductServiceTests
 
         [Test]
         public void GetNonExistentMarkdownReturnsZero()
-        {
-            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
-            mockMarkdownRepository.Setup(x => x.GetByProductName(nonExistentMarkdownWithExistingPrice.ProductName)).Returns((Markdown)null);
+        {            
+            Mock<MarkdownDataAccessor> mockMarkdownDataAccessor = new Mock<MarkdownDataAccessor>();
+            mockMarkdownDataAccessor.Setup(x => x.GetMarkdownAmount(nonExistentMarkdownWithExistingPrice.ProductName))
+                .Returns(0);
 
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
-
-            MarkdownController markdownController = new MarkdownController(mockMarkdownRepository.Object,
-                mockPriceRepository.Object);
+            MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
 
             string productName = "Bananas";
 

@@ -11,6 +11,11 @@ namespace ProductService.Models.Markdowns
         private IRepository<Markdown> _markdownRepository;
         private IRepository<Product> _priceRepository;
 
+        public MarkdownDataAccessor()
+        {
+
+        }
+
         public MarkdownDataAccessor(IRepository<Markdown> markdownRepository,
             IRepository<Product> priceRepository)
         {
@@ -28,7 +33,7 @@ namespace ProductService.Models.Markdowns
             return _markdownRepository.GetByProductName(productName);
         }
 
-        public float GetMarkdownAmount(string productName)
+        public virtual float GetMarkdownAmount(string productName)
         {
             var markdown = _markdownRepository.GetByProductName(productName);
 
@@ -52,7 +57,7 @@ namespace ProductService.Models.Markdowns
                 if (saveThis.Amount < priceDict[saveThis.ProductName].Price)
                 {
                     _markdownRepository.Save(saveThis);
-                    return "Success";
+                    return "Success.";
                 }
                 else
                 {
