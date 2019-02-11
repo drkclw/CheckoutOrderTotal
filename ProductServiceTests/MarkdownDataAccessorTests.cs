@@ -18,6 +18,8 @@ namespace ProductServiceTests
         private List<Product> productList;
         private Markdown markdownForNonExistentPrice;
         private Markdown nonExistentMarkdownWithoutExistingPrice;
+        private Markdown nonExistentMarkdownWithExistingPrice;
+        private Product bananas;
 
         [SetUp]
         public void Setup()
@@ -53,11 +55,25 @@ namespace ProductServiceTests
                 Amount = 0.55f
             };
 
+            nonExistentMarkdownWithExistingPrice = new Markdown
+            {
+                ProductName = "Bananas",
+                Amount = 0.55f
+            };
+
+            bananas = new Product
+            {
+                ProductName = "Bananas",
+                Price = 5f,
+                Unit = Unit.LBS
+            };
+
             markdownList = new List<Markdown>();
             markdownList.Add(validMarkdown);
 
             productList = new List<Product>();
             productList.Add(canOfSoup);
+            productList.Add(bananas);
         }
 
         [Test]
@@ -243,6 +259,24 @@ namespace ProductServiceTests
             var result = markdownDataAccessor.Update(nonExistentMarkdownWithoutExistingPrice);
 
             Assert.AreEqual(result, "Error: Cannot update markdown for a product that doesn't have a price.");
+        }
+
+        [Test]
+        public void UpdateNonExistentMarkdownReturnsError()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.Update(nonExistentMarkdownWithExistingPrice)).Returns(false);
+            mockMarkdownRepository.Setup(x => x.GetAll()).Returns(markdownList);
+
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object,
+                mockPriceRepository.Object);
+
+            var result = markdownDataAccessor.Update(nonExistentMarkdownWithExistingPrice);
+
+            Assert.AreEqual(result, "Markdown does not exist, create markdown before updating price.");
         }
     }
 }

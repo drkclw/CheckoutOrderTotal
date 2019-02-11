@@ -90,13 +90,15 @@ namespace ProductService.Models.Markdowns
                         return "Error: Markdown must be smaller than price.";
                     }
                 }
+                else
+                {
+                    return "Markdown does not exist, create markdown before updating price.";
+                }
             }
             else
             {
                 return "Error: Cannot update markdown for a product that doesn't have a price.";
             }
-
-            return "";
         }
     }
 }
