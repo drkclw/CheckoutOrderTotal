@@ -76,17 +76,24 @@ namespace ProductService.Models.Markdowns
             var markdownDict = _markdownRepository.GetAll().ToDictionary(p => p.ProductName, p => p);
             var priceDict = _priceRepository.GetAll().ToDictionary(p => p.ProductName, p => p);
 
-            if (markdownDict.ContainsKey(updateThis.ProductName))
+            if (priceDict.ContainsKey(updateThis.ProductName))
             {
-                if (priceDict[updateThis.ProductName].Price > updateThis.Amount)
+                if (markdownDict.ContainsKey(updateThis.ProductName))
                 {
-                    _markdownRepository.Update(updateThis);
-                    return "Success.";
+                    if (priceDict[updateThis.ProductName].Price > updateThis.Amount)
+                    {
+                        _markdownRepository.Update(updateThis);
+                        return "Success.";
+                    }
+                    else
+                    {
+                        return "Error: Markdown must be smaller than price.";
+                    }
                 }
-                else
-                {
-                    return "Error: Markdown must be smaller than price.";
-                }
+            }
+            else
+            {
+                return "Error: Cannot update markdown for a product that doesn't have a price.";
             }
 
             return "";

@@ -17,6 +17,7 @@ namespace ProductServiceTests
         private Product canOfSoup;
         private List<Product> productList;
         private Markdown markdownForNonExistentPrice;
+        private Markdown nonExistentMarkdownWithoutExistingPrice;
 
         [SetUp]
         public void Setup()
@@ -44,6 +45,12 @@ namespace ProductServiceTests
             {
                 ProductName = "Apples",
                 Amount = 2.55f
+            };
+
+            nonExistentMarkdownWithoutExistingPrice = new Markdown
+            {
+                ProductName = "Can of beans",
+                Amount = 0.55f
             };
 
             markdownList = new List<Markdown>();
@@ -218,6 +225,24 @@ namespace ProductServiceTests
             var result = markdownDataAccessor.Update(invalidMarkdown);
 
             Assert.AreEqual(result, "Error: Markdown must be smaller than price.");
+        }
+
+        [Test]
+        public void UpdateMarkdownForNonExistentPriceReturnsError()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.Update(nonExistentMarkdownWithoutExistingPrice)).Returns(false);
+            mockMarkdownRepository.Setup(x => x.GetAll()).Returns(markdownList);
+
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object,
+                mockPriceRepository.Object);
+
+            var result = markdownDataAccessor.Update(nonExistentMarkdownWithoutExistingPrice);
+
+            Assert.AreEqual(result, "Error: Cannot update markdown for a product that doesn't have a price.");
         }
     }
 }
