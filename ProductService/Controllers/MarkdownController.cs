@@ -44,7 +44,7 @@ namespace ProductService.Controllers
         [HttpGet("{productName}")]
         public ActionResult<float> GetMarkdown(string productName)
         {
-            return ((MarkdownDataAccessor)_dataAccessor).GetMarkdownAmount(productName);
+            return _dataAccessor.GetAmountByProductName(productName);
         }
     }
 }

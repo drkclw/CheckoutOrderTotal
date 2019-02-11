@@ -119,7 +119,7 @@ namespace ProductServiceTests
 
             MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object,
                 mockPriceRepository.Object);
-            var markdownAmount = markdownDataAccessor.GetMarkdownAmount("Can of soup");
+            var markdownAmount = markdownDataAccessor.GetAmountByProductName("Can of soup");
 
             Assert.AreEqual(markdownAmount, 0.45f);
         }
@@ -135,7 +135,7 @@ namespace ProductServiceTests
 
             MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object,
                 mockPriceRepository.Object);
-            var markdownAmount = markdownDataAccessor.GetMarkdownAmount("Can of soup");
+            var markdownAmount = markdownDataAccessor.GetAmountByProductName("Can of soup");
 
             Assert.AreEqual(markdownAmount, validMarkdown.Amount);
         }
@@ -151,7 +151,7 @@ namespace ProductServiceTests
 
             MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object,
                 mockPriceRepository.Object);
-            var markdownAmount = markdownDataAccessor.GetMarkdownAmount("Bananas");
+            var markdownAmount = markdownDataAccessor.GetAmountByProductName("Bananas");
 
             Assert.AreEqual(markdownAmount, 0);
         }

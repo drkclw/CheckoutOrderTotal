@@ -12,5 +12,6 @@ namespace ProductService.Models
         string Save(T saveThis);
         void Delete(T deleteThis);
         string Update(T updateThis);
+        float GetAmountByProductName(string productName);
     }
 }

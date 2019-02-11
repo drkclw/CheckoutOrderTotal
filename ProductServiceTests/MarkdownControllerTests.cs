@@ -197,9 +197,9 @@ namespace ProductServiceTests
 
         [Test]
         public void GetExistentMarkdownReturnsMarkdown()
-        {            
-            Mock<MarkdownDataAccessor> mockMarkdownDataAccessor = new Mock<MarkdownDataAccessor>();
-            mockMarkdownDataAccessor.Setup(x => x.GetMarkdownAmount(validMarkdown.ProductName))
+        {
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.GetAmountByProductName(validMarkdown.ProductName))
                 .Returns(validMarkdown.Amount);
 
             MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);
@@ -215,8 +215,8 @@ namespace ProductServiceTests
         [Test]
         public void GetNonExistentMarkdownReturnsZero()
         {            
-            Mock<MarkdownDataAccessor> mockMarkdownDataAccessor = new Mock<MarkdownDataAccessor>();
-            mockMarkdownDataAccessor.Setup(x => x.GetMarkdownAmount(nonExistentMarkdownWithExistingPrice.ProductName))
+            Mock<IDataAccessor<Markdown>> mockMarkdownDataAccessor = new Mock<IDataAccessor<Markdown>>();
+            mockMarkdownDataAccessor.Setup(x => x.GetAmountByProductName(nonExistentMarkdownWithExistingPrice.ProductName))
                 .Returns(0);
 
             MarkdownController markdownController = new MarkdownController(mockMarkdownDataAccessor.Object);

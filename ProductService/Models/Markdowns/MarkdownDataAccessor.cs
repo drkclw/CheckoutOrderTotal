@@ -33,7 +33,7 @@ namespace ProductService.Models.Markdowns
             return _markdownRepository.GetByProductName(productName);
         }
 
-        public virtual float GetMarkdownAmount(string productName)
+        public float GetAmountByProductName(string productName)
         {
             var markdown = _markdownRepository.GetByProductName(productName);
 

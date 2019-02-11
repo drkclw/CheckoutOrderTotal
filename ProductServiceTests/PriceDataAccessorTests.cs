@@ -50,5 +50,18 @@ namespace ProductServiceTests
 
             Assert.NotNull(price);
         }
+
+        [Test]
+        public void GetPriceAmountWithExistingPriceReturnsPriceAmount()
+        {            
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validProduct);
+
+            PriceDataAccessor priceDataAccessor = new PriceDataAccessor(mockPriceRepository.Object);
+
+            var priceAmount = priceDataAccessor.GetAmountByProductName("Can of soup");
+
+            Assert.AreEqual(priceAmount, 2.50f);
+        }
     }
 }

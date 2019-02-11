@@ -7,20 +7,27 @@ namespace ProductService.Models.Prices
 {
     public class PriceDataAccessor : IDataAccessor<Product>
     {
-        private IRepository<Product> _productRepository;
+        private IRepository<Product> _priceRepository;
 
-        public PriceDataAccessor(IRepository<Product> productRepository)
+        public PriceDataAccessor(IRepository<Product> priceRepository)
         {
-            _productRepository = productRepository;
+            _priceRepository = priceRepository;
         }
 
         public IList<Product> GetAll()
         {
-            return _productRepository.GetAll();
+            return _priceRepository.GetAll();
         }
+
         public Product GetByProductName(string productName)
         {
-            return _productRepository.GetByProductName(productName);
+            return _priceRepository.GetByProductName(productName);
+        }
+
+        public float GetAmountByProductName(string productName)
+        {
+            var price = _priceRepository.GetByProductName(productName);
+            return price.Price;
         }
 
         public string Save(Product saveThis)
