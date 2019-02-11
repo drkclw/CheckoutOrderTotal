@@ -47,14 +47,21 @@ namespace ProductService.Models.Markdowns
             var priceList = _priceRepository.GetAll();
             var priceDict = priceList.ToDictionary(p => p.ProductName, p => p);
 
-            if (saveThis.Amount < priceDict[saveThis.ProductName].Price)
+            if (priceDict.ContainsKey(saveThis.ProductName))
             {
-                _markdownRepository.Save(saveThis);
-                return "Success";
+                if (saveThis.Amount < priceDict[saveThis.ProductName].Price)
+                {
+                    _markdownRepository.Save(saveThis);
+                    return "Success";
+                }
+                else
+                {
+                    return "Error: Markdown must be smaller than price.";
+                }
             }
             else
             {
-                return "Error: Markdown must be smaller than price.";
+                return "Error: Cannot add markdown for a product that doesn't have a price.";
             }
         }
 
