@@ -63,6 +63,7 @@ namespace ProductService.Models.Markdowns
             {
                 return "Error: Cannot add markdown for a product that doesn't have a price.";
             }
+
         }
 
         public void Delete(Markdown deleteThis)
@@ -72,7 +73,15 @@ namespace ProductService.Models.Markdowns
 
         public string Update(Markdown updateThis)
         {
-            throw new NotImplementedException();
+            var markdownDict = _markdownRepository.GetAll().ToDictionary(p => p.ProductName, p => p);
+
+            if (markdownDict.ContainsKey(updateThis.ProductName))
+            {
+                _markdownRepository.Update(updateThis);
+                return "Success.";
+            }
+
+            return "";
         }
     }
 }

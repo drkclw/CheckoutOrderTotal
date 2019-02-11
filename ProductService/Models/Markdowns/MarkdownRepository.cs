@@ -37,15 +37,8 @@ namespace ProductService.Models.Markdowns
         {
             var markdownDict = markdownList.ToDictionary(p => p.ProductName, p => p);
 
-            if (markdownDict.ContainsKey(updateThis.ProductName))
-            {
-                markdownDict[updateThis.ProductName].Amount = updateThis.Amount;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            markdownDict[updateThis.ProductName].Amount = updateThis.Amount;
+            return true;
         }
     }
 }

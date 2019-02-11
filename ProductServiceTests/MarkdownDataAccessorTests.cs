@@ -183,5 +183,23 @@ namespace ProductServiceTests
 
             Assert.AreEqual(result, "Error: Cannot add markdown for a product that doesn't have a price.");
         }
+
+        [Test]
+        public void UpdateValidExistingMarkdownReturnsSuccess()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.Update(validMarkdown)).Returns(true);
+            mockMarkdownRepository.Setup(x => x.GetAll()).Returns(markdownList);
+
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object,
+                mockPriceRepository.Object);
+
+            var result = markdownDataAccessor.Update(validMarkdown);
+
+            Assert.AreEqual(result, "Success.");
+        }
     }
 }
