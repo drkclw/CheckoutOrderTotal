@@ -201,5 +201,23 @@ namespace ProductServiceTests
 
             Assert.AreEqual(result, "Success.");
         }
+
+        [Test]
+        public void UpdateInvalidExistingMarkdownReturnsError()
+        {
+            Mock<IRepository<Markdown>> mockMarkdownRepository = new Mock<IRepository<Markdown>>();
+            mockMarkdownRepository.Setup(x => x.Update(invalidMarkdown)).Returns(false);
+            mockMarkdownRepository.Setup(x => x.GetAll()).Returns(markdownList);
+
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+
+            MarkdownDataAccessor markdownDataAccessor = new MarkdownDataAccessor(mockMarkdownRepository.Object,
+                mockPriceRepository.Object);
+
+            var result = markdownDataAccessor.Update(invalidMarkdown);
+
+            Assert.AreEqual(result, "Error: Markdown must be smaller than price.");
+        }
     }
 }
