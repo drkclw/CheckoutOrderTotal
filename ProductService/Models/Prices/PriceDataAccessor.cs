@@ -27,7 +27,15 @@ namespace ProductService.Models.Prices
         public float GetAmountByProductName(string productName)
         {
             var price = _priceRepository.GetByProductName(productName);
-            return price.Price;
+
+            if (price != null)
+            {
+                return price.Price;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public string Save(Product saveThis)
