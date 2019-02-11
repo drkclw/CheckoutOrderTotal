@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProductService.Models.Prices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,10 +9,13 @@ namespace ProductService.Models.Markdowns
     public class MarkdownDataAccessor : IDataAccessor<Markdown>
     {
         private IRepository<Markdown> _markdownRepository;
-        
-        public MarkdownDataAccessor(IRepository<Markdown> markdownRepository)
+        private IRepository<Product> _priceRepository;
+
+        public MarkdownDataAccessor(IRepository<Markdown> markdownRepository,
+            IRepository<Product> priceRepository)
         {
             _markdownRepository = markdownRepository;
+            _priceRepository = priceRepository;
         }
 
         public IList<Markdown> GetAll()
@@ -40,8 +44,18 @@ namespace ProductService.Models.Markdowns
 
         public string Save(Markdown saveThis)
         {
-            _markdownRepository.Save(saveThis);
-            return "Success";
+            var priceList = _priceRepository.GetAll();
+            var priceDict = priceList.ToDictionary(p => p.ProductName, p => p);
+
+            if (saveThis.Amount < priceDict[saveThis.ProductName].Price)
+            {
+                _markdownRepository.Save(saveThis);
+                return "Success";
+            }
+            else
+            {
+                return "Error: Markdown must be smaller than price.";
+            }
         }
 
         public void Delete(Markdown deleteThis)
