@@ -16,7 +16,7 @@ namespace ProductService.Models.Prices
 
         public IList<Product> GetAll()
         {
-            return new List<Product>();
+            return _productRepository.GetAll();
         }
         public Product GetByProductName(string productName)
         {
