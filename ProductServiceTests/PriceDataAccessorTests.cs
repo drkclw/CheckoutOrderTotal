@@ -134,5 +134,18 @@ namespace ProductServiceTests
 
             Assert.AreEqual(updateResult, "Success.");
         }
+
+        [Test]
+        public void UpdateInvalidExistingPriceReturnsError()
+        {
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.Update(invalidProduct)).Returns(true);
+
+            PriceDataAccessor priceDataAccessor = new PriceDataAccessor(mockPriceRepository.Object);
+
+            var updateResult = priceDataAccessor.Update(invalidProduct);
+
+            Assert.AreEqual(updateResult, "Error: Price must be bigger than 0.");
+        }
     }
 }

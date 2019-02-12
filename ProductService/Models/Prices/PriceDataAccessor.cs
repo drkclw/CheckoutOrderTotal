@@ -58,8 +58,15 @@ namespace ProductService.Models.Prices
 
         public string Update(Product updateThis)
         {
-            _priceRepository.Update(updateThis);
-            return "Success.";
+            if (updateThis.Price > 0)
+            {
+                _priceRepository.Update(updateThis);
+                return "Success.";
+            }
+            else
+            {
+                return "Error: Price must be bigger than 0.";
+            }
         }
     }
 }
