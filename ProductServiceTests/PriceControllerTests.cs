@@ -47,10 +47,10 @@ namespace ProductServiceTests
         [Test]
         public void GetAllPricesReturnsListOfPrices()
         {
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+            Mock<IDataAccessor<Product>> mockPriceDataAccessor = new Mock<IDataAccessor<Product>>();
+            mockPriceDataAccessor.Setup(x => x.GetAll()).Returns(productList);
 
-            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            PriceController priceController = new PriceController(mockPriceDataAccessor.Object);
             var result = priceController.GetAllPrices();
             var contentResult = result as ActionResult<IEnumerable<Product>>;
 
@@ -60,24 +60,25 @@ namespace ProductServiceTests
         [Test]
         public void AddingValidPriceReturnsSuccess()
         {
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.Save(validProduct));
+            Mock<IDataAccessor<Product>> mockPriceDataAccessor = new Mock<IDataAccessor<Product>>();
+            mockPriceDataAccessor.Setup(x => x.Save(validProduct)).Returns("Success.");
 
-            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            PriceController priceController = new PriceController(mockPriceDataAccessor.Object);
             
             var result = priceController.AddPrice(validProduct);
             var contentResult = result as ActionResult<string>;
 
-            Assert.AreEqual(contentResult.Value, "Success");
+            Assert.AreEqual(contentResult.Value, "Success.");
         }
 
         [Test]
         public void AddingInvalidPriceReturnsErrorMessage()
         {
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.Save(invalidProduct));
+            Mock<IDataAccessor<Product>> mockPriceDataAccessor = new Mock<IDataAccessor<Product>>();
+            mockPriceDataAccessor.Setup(x => x.Save(invalidProduct))
+                .Returns("Error: Price must be bigger than 0.");
 
-            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            PriceController priceController = new PriceController(mockPriceDataAccessor.Object);
             
             var result = priceController.AddPrice(invalidProduct);
             var contentResult = result as ActionResult<string>;
@@ -87,25 +88,26 @@ namespace ProductServiceTests
             
         [Test]
         public void UpdateValidExistingPriceReturnsSuccess()
-        {            
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.Update(validProduct)).Returns(true);
+        {
+            Mock<IDataAccessor<Product>> mockPriceDataAccessor = new Mock<IDataAccessor<Product>>();
+            mockPriceDataAccessor.Setup(x => x.Update(validProduct)).Returns("Success.");
 
-            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            PriceController priceController = new PriceController(mockPriceDataAccessor.Object);
             
             var updateResult = priceController.UpdatePrice(validProduct);
             var updateContentResult = updateResult as ActionResult<string>;
 
-            Assert.AreEqual(updateContentResult.Value, "Success");
+            Assert.AreEqual(updateContentResult.Value, "Success.");
         }
 
         [Test]
         public void UpdateInvalidExistingPriceReturnsError()
         {
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.Update(invalidProduct)).Returns(true);
+            Mock<IDataAccessor<Product>> mockPriceDataAccessor = new Mock<IDataAccessor<Product>>();
+            mockPriceDataAccessor.Setup(x => x.Update(invalidProduct))
+                .Returns("Error: Price must be bigger than 0.");
 
-            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            PriceController priceController = new PriceController(mockPriceDataAccessor.Object);
 
             var updateResult = priceController.UpdatePrice(invalidProduct);
             var updateContentResult = updateResult as ActionResult<string>;
@@ -116,10 +118,11 @@ namespace ProductServiceTests
         [Test]
         public void UpdateNonExistentPriceReturnsError()
         {
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.Update(nonExistentProduct)).Returns(false);
+            Mock<IDataAccessor<Product>> mockPriceDataAccessor = new Mock<IDataAccessor<Product>>();
+            mockPriceDataAccessor.Setup(x => x.Update(nonExistentProduct))
+                .Returns("Product does not exist, create product before updating price.");
 
-            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            PriceController priceController = new PriceController(mockPriceDataAccessor.Object);
 
             var updateResult = priceController.UpdatePrice(nonExistentProduct);
             var updateContentResult = updateResult as ActionResult<string>;
@@ -130,10 +133,10 @@ namespace ProductServiceTests
         [Test]
         public void GetPriceForSpecificProductReturnsPrice()
         {
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetByProductName(validProduct.ProductName)).Returns(validProduct);
+            Mock<IDataAccessor<Product>> mockPriceDataAccessor = new Mock<IDataAccessor<Product>>();
+            mockPriceDataAccessor.Setup(x => x.GetAmountByProductName(validProduct.ProductName)).Returns(2.5f);
 
-            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            PriceController priceController = new PriceController(mockPriceDataAccessor.Object);
 
             string productName = "Can of soup";
 
@@ -146,10 +149,10 @@ namespace ProductServiceTests
         [Test]
         public void GetPriceForNonExistentProductReturnsZero()
         {
-            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
-            mockPriceRepository.Setup(x => x.GetByProductName(nonExistentProduct.ProductName)).Returns((Product)null);
+            Mock<IDataAccessor<Product>> mockPriceDataAccessor = new Mock<IDataAccessor<Product>>();
+            mockPriceDataAccessor.Setup(x => x.GetAmountByProductName(nonExistentProduct.ProductName)).Returns(0);
 
-            PriceController priceController = new PriceController(mockPriceRepository.Object);
+            PriceController priceController = new PriceController(mockPriceDataAccessor.Object);
 
             string productName = "Bananas";
 

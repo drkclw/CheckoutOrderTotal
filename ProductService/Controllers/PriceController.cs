@@ -13,11 +13,11 @@ namespace ProductService.Controllers
     [ApiController]
     public class PriceController : ControllerBase
     {
-        IRepository<Product> priceRepository;
+        IDataAccessor<Product> _priceDataAccessor;
 
-        public PriceController(IRepository<Product> repository)
+        public PriceController(IDataAccessor<Product> priceDataAccessor)
         {
-            priceRepository = repository;
+            _priceDataAccessor = priceDataAccessor;
         }
 
         // GET api/allprices
@@ -25,53 +25,25 @@ namespace ProductService.Controllers
         [Route("allprices")]
         public ActionResult<IEnumerable<Product>> GetAllPrices()
         {            
-            return priceRepository.GetAll().ToList();
+            return _priceDataAccessor.GetAll().ToList();
         }
 
         [HttpPost]
         public ActionResult<string> AddPrice([FromBody] Product product)
         {
-            if (product.Price > 0)
-            {
-                priceRepository.Save(product);
-                return "Success";
-            }
-            else
-            {
-                return "Error: Price must be bigger than 0.";
-            }
+            return _priceDataAccessor.Save(product);
         }
 
         [HttpPut]
         public ActionResult<string> UpdatePrice([FromBody] Product product)
         {
-            if(product.Price < 0)
-            {
-                return "Error: Price must be bigger than 0.";
-            }
-
-            bool updateResult = priceRepository.Update(product);
-
-            if(updateResult)
-                return "Success";
-            else
-            {
-                return "Product does not exist, create product before updating price.";
-            }
+            return _priceDataAccessor.Update(product);
         }
 
         [HttpGet("{productName}")]
         public ActionResult<float> GetPrice(string productName)
         {
-            var product = priceRepository.GetByProductName(productName);
-            if (product == null)
-            {
-                return 0;
-            }
-            else
-            {
-                return product.Price;
-            }
+            return _priceDataAccessor.GetAmountByProductName(productName);
         }
     }
 }
