@@ -87,5 +87,18 @@ namespace ProductServiceTests
 
             Assert.AreEqual(priceAmount, 0);
         }
+
+        [Test]
+        public void AddingValidPriceReturnsSuccess()
+        {
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.Save(validProduct));
+            
+            PriceDataAccessor priceDataAccessor = new PriceDataAccessor(mockPriceRepository.Object);
+
+            var result = priceDataAccessor.Save(validProduct);
+
+            Assert.AreEqual(result, "Success.");
+        }
     }
 }

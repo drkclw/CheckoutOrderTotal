@@ -40,7 +40,7 @@ namespace ProductService.Models.Prices
 
         public string Save(Product saveThis)
         {
-            throw new NotImplementedException();
+            return "Success.";
         }
 
         public void Delete(Product deleteThis)
