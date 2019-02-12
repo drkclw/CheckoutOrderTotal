@@ -31,6 +31,7 @@ namespace ProductService.Models.Specials
 
         public string Save(ISpecial saveThis)
         {
+            _specialsRepository.Save(saveThis);
             return "Success.";
         }
 
