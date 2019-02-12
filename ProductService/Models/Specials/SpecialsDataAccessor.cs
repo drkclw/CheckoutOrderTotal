@@ -51,6 +51,10 @@ namespace ProductService.Models.Specials
                 {
                     return "Error: Price must be bigger than 0.";
                 }
+            }else if(saveThis.Type == SpecialType.Limit)
+            {
+                _specialsRepository.Save(saveThis);
+                return "Success.";
             }
             return "";
         }
