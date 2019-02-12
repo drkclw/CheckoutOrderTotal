@@ -53,8 +53,16 @@ namespace ProductService.Models.Specials
                 }
             }else if(saveThis.Type == SpecialType.Limit)
             {
-                _specialsRepository.Save(saveThis);
-                return "Success.";
+                var limitSpecial = (LimitSpecial)saveThis;
+                if (limitSpecial.Limit > 0)
+                {
+                    _specialsRepository.Save(saveThis);
+                    return "Success.";
+                }
+                else
+                {
+                    return "Error: Limit must be bigger than 0.";
+                }
             }
             return "";
         }
