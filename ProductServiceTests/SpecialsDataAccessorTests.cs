@@ -13,12 +13,14 @@ namespace ProductServiceTests
         private List<ISpecial> specialsList;
         private PriceSpecial validPriceSpecial;
         private LimitSpecial validLimitSpecial;
+        private PriceSpecial zeroPriceSpecial;
 
         [SetUp]
         public void Setup()
         {
             validPriceSpecial = new PriceSpecial("Can of soup", 2, true, 5);
             validLimitSpecial = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 4);
+            zeroPriceSpecial = new PriceSpecial("Can of soup", 2, true, 0);
 
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
@@ -83,6 +85,17 @@ namespace ProductServiceTests
             var result = specialsDataAccessor.Save(validPriceSpecial);
 
             Assert.AreEqual(result, "Success.");
+        }
+
+        [Test]
+        public void AddingPriceSpecialWithZeroPriceReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();            
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var result = specialsDataAccessor.Save(zeroPriceSpecial);
+
+            Assert.AreEqual(result, "Error: Price must be bigger than 0.");
         }
     }
 }

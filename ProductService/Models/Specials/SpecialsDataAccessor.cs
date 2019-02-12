@@ -31,8 +31,21 @@ namespace ProductService.Models.Specials
 
         public string Save(ISpecial saveThis)
         {
-            _specialsRepository.Save(saveThis);
-            return "Success.";
+            if(saveThis.Type == SpecialType.Price)
+            {
+                var priceSpecial = (PriceSpecial)saveThis;
+
+                if (priceSpecial.Price > 0)
+                {
+                    _specialsRepository.Save(saveThis);
+                    return "Success.";
+                }
+                else
+                {
+                    return "Error: Price must be bigger than 0.";
+                }
+            }
+            return "";
         }
 
         public void Delete(ISpecial deleteThis)
