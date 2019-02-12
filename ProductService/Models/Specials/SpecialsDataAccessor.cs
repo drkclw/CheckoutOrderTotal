@@ -37,8 +37,15 @@ namespace ProductService.Models.Specials
 
                 if (priceSpecial.Price > 0)
                 {
-                    _specialsRepository.Save(saveThis);
-                    return "Success.";
+                    if (priceSpecial.PurchaseQty >= 2)
+                    {
+                        _specialsRepository.Save(saveThis);
+                        return "Success.";
+                    }
+                    else
+                    {
+                        return "Error: Purchase quantity must be bigger than 1.";
+                    }
                 }
                 else
                 {
