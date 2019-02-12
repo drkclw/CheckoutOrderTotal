@@ -13,6 +13,7 @@ namespace ProductServiceTests
         private Product validProduct;
         private List<Product> productList;
         private Product invalidProduct;
+        private Product nonExistentProduct;
 
         [SetUp]
         public void Setup()
@@ -29,6 +30,13 @@ namespace ProductServiceTests
                 ProductName = "Can of soup",
                 Price = -1f,
                 Unit = Unit.EA
+            };
+
+            nonExistentProduct = new Product
+            {
+                ProductName = "Bananas",
+                Price = 5f,
+                Unit = Unit.LBS
             };
 
             productList = new List<Product>();
@@ -146,6 +154,20 @@ namespace ProductServiceTests
             var updateResult = priceDataAccessor.Update(invalidProduct);
 
             Assert.AreEqual(updateResult, "Error: Price must be bigger than 0.");
+        }
+
+        [Test]
+        public void UpdateNonExistentPriceReturnsError()
+        {
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
+            mockPriceRepository.Setup(x => x.Update(nonExistentProduct)).Returns(false);
+
+            PriceDataAccessor priceDataAccessor = new PriceDataAccessor(mockPriceRepository.Object);
+
+            var updateResult = priceDataAccessor.Update(nonExistentProduct);
+
+            Assert.AreEqual(updateResult, "Product does not exist, create product before updating price.");
         }
     }
 }

@@ -57,11 +57,19 @@ namespace ProductService.Models.Prices
         }
 
         public string Update(Product updateThis)
-        {
+        {            
             if (updateThis.Price > 0)
             {
-                _priceRepository.Update(updateThis);
-                return "Success.";
+                var existingPrice = _priceRepository.GetAll().FirstOrDefault(p => p.ProductName == updateThis.ProductName);
+                if (existingPrice != null)
+                {
+                    _priceRepository.Update(updateThis);
+                    return "Success.";
+                }
+                else
+                {
+                    return "Product does not exist, create product before updating price.";
+                }
             }
             else
             {
