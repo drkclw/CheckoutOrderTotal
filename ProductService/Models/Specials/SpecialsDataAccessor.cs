@@ -21,6 +21,11 @@ namespace ProductService.Models.Specials
 
         public ISpecial GetByProductName(string productName)
         {
+            return _specialsRepository.GetByProductName(productName);
+        }
+
+        public float GetAmountByProductName(string productName)
+        {
             throw new NotImplementedException();
         }
 
@@ -37,11 +42,6 @@ namespace ProductService.Models.Specials
         public string Update(ISpecial updateThis)
         {
             throw new NotImplementedException();
-        }
-
-        public float GetAmountByProductName(string productName)
-        {
-            throw new NotImplementedException();
-        }
+        }        
     }
 }

@@ -20,16 +20,7 @@ namespace ProductService.Models.Specials
         }
         public ISpecial GetByProductName(string productName)
         {
-            var specialsDict = specialsList.ToDictionary(p => p.ProductName, p => p);
-
-            if (specialsDict.ContainsKey(productName))
-            {
-                return specialsDict[productName];
-            }
-            else
-            {
-                return null;
-            }
+            return specialsList.FirstOrDefault(s => s.ProductName == productName);
         }
 
         public void Save(ISpecial saveThis)
