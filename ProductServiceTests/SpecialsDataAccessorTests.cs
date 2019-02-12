@@ -16,6 +16,7 @@ namespace ProductServiceTests
         private PriceSpecial zeroPriceSpecial;
         private PriceSpecial lessThanTwoQuantityPriceSpecial;
         private LimitSpecial limitSpecialWithoutLimit;
+        private LimitSpecial limitSpecialWithoutDiscount;
 
         [SetUp]
         public void Setup()
@@ -25,6 +26,7 @@ namespace ProductServiceTests
             zeroPriceSpecial = new PriceSpecial("Can of soup", 2, true, 0);
             lessThanTwoQuantityPriceSpecial = new PriceSpecial("Can of soup", 1, true, 5);
             limitSpecialWithoutLimit = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 0);
+            limitSpecialWithoutDiscount = new LimitSpecial("Can of beans", 2, true, 1, 0, 2);
 
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
@@ -133,6 +135,17 @@ namespace ProductServiceTests
             var result = specialsDataAccessor.Save(limitSpecialWithoutLimit);
 
             Assert.AreEqual(result, "Error: Limit must be bigger than 0.");
+        }
+
+        [Test]
+        public void AddingLimitSpecialWithoutDiscountReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var result = specialsDataAccessor.Save(limitSpecialWithoutDiscount);
+
+            Assert.AreEqual(result, "Error: Discount must be bigger than 0.");
         }
     }
 }

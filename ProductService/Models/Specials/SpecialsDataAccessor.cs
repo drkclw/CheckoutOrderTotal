@@ -56,8 +56,15 @@ namespace ProductService.Models.Specials
                 var limitSpecial = (LimitSpecial)saveThis;
                 if (limitSpecial.Limit > 0)
                 {
-                    _specialsRepository.Save(saveThis);
-                    return "Success.";
+                    if (limitSpecial.DiscountAmount > 0)
+                    {
+                        _specialsRepository.Save(saveThis);
+                        return "Success.";
+                    }
+                    else
+                    {
+                        return "Error: Discount must be bigger than 0.";
+                    }
                 }
                 else
                 {
