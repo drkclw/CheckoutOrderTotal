@@ -58,6 +58,7 @@ namespace ProductService.Models.Prices
 
         public string Update(Product updateThis)
         {
+            _priceRepository.Update(updateThis);
             return "Success.";
         }
     }
