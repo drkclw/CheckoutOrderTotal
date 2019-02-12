@@ -31,7 +31,7 @@ namespace ProductService.Models.Specials
 
         public string Save(ISpecial saveThis)
         {
-            throw new NotImplementedException();
+            return "Success.";
         }
 
         public void Delete(ISpecial deleteThis)
