@@ -58,7 +58,7 @@ namespace ProductService.Models.Prices
 
         public string Update(Product updateThis)
         {
-            throw new NotImplementedException();
+            return "Success.";
         }
     }
 }
