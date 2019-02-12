@@ -16,7 +16,7 @@ namespace ProductService.Models.Specials
 
         public IList<ISpecial> GetAll()
         {
-            return new List<ISpecial>();
+            return _specialsRepository.GetAll();
         }
 
         public ISpecial GetByProductName(string productName)
