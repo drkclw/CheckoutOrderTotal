@@ -40,8 +40,15 @@ namespace ProductService.Models.Prices
 
         public string Save(Product saveThis)
         {
-            _priceRepository.Save(saveThis);
-            return "Success.";
+            if (saveThis.Price > 0)
+            {
+                _priceRepository.Save(saveThis);
+                return "Success.";
+            }            
+            else
+            {
+                return "Error: Price must be bigger than 0.";
+            }        
         }
 
         public void Delete(Product deleteThis)

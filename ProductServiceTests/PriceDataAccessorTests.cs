@@ -12,6 +12,7 @@ namespace ProductServiceTests
     {
         private Product validProduct;
         private List<Product> productList;
+        private Product invalidProduct;
 
         [SetUp]
         public void Setup()
@@ -20,6 +21,13 @@ namespace ProductServiceTests
             {
                 ProductName = "Can of soup",
                 Price = 2.50f,
+                Unit = Unit.EA
+            };
+
+            invalidProduct = new Product
+            {
+                ProductName = "Can of soup",
+                Price = -1f,
                 Unit = Unit.EA
             };
 
@@ -99,6 +107,19 @@ namespace ProductServiceTests
             var result = priceDataAccessor.Save(validProduct);
 
             Assert.AreEqual(result, "Success.");
+        }
+
+        [Test]
+        public void AddingInvalidPriceReturnsErrorMessage()
+        {
+            Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.Save(invalidProduct));
+
+            PriceDataAccessor priceDataAccessor = new PriceDataAccessor(mockPriceRepository.Object);
+
+            var result = priceDataAccessor.Save(invalidProduct);            
+
+            Assert.AreEqual(result, "Error: Price must be bigger than 0.");
         }
     }
 }
