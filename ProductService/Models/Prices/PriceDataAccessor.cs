@@ -40,6 +40,7 @@ namespace ProductService.Models.Prices
 
         public string Save(Product saveThis)
         {
+            _priceRepository.Save(saveThis);
             return "Success.";
         }
 
