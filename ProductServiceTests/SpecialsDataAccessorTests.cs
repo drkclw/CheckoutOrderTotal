@@ -48,5 +48,17 @@ namespace ProductServiceTests
 
             Assert.NotNull(special);
         }
+
+        [Test]
+        public void GetByProductNameWithNonExistentSpecialReturnsNull()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Bananas")).Returns((ISpecial)null);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var special = specialsDataAccessor.GetByProductName("Bananas");
+
+            Assert.IsNull(special);
+        }
     }
 }
