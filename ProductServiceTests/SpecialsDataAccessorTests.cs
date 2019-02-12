@@ -62,7 +62,19 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void AddingValidSpeciaReturnsSuccess()
+        public void AddingValidSpecialReturnsSuccess()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.Save(validPriceSpecial));
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var result = specialsDataAccessor.Save(validPriceSpecial);
+
+            Assert.AreEqual(result, "Success.");
+        }
+
+        [Test]
+        public void AddingValidPriceSpecialReturnsSuccess()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.Save(validPriceSpecial));
