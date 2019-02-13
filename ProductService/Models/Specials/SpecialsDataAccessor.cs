@@ -110,6 +110,10 @@ namespace ProductService.Models.Specials
             {
                 return "Success.";
             }
+            else
+            {
+                return "Error: Special does not exist, please create special before updating.";
+            }
             return string.Empty;
         }        
     }

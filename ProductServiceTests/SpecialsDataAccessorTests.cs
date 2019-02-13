@@ -22,6 +22,7 @@ namespace ProductServiceTests
         private RestrictionSpecial validRestrictionSpecial;
         private RestrictionSpecial restrictionSpecialWithZeroDiscountAmount;
         private RestrictionSpecial restrictionSpecialWithZeroDiscountQty;
+        private PriceSpecial nonExistentPriceSpecial;
 
         [SetUp]
         public void Setup()
@@ -37,6 +38,7 @@ namespace ProductServiceTests
             validRestrictionSpecial = new RestrictionSpecial("Bananas", 2, true, 1, 0.5f, RestrictionType.Lesser);
             restrictionSpecialWithZeroDiscountAmount = new RestrictionSpecial("Bananas", 2, true, 1, 0, RestrictionType.Lesser);
             restrictionSpecialWithZeroDiscountQty = new RestrictionSpecial("Bananas", 2, true, 0, 0.5f, RestrictionType.Lesser);
+            nonExistentPriceSpecial = new PriceSpecial("Milk", 2, true, 5);
 
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
@@ -224,6 +226,18 @@ namespace ProductServiceTests
             var result = specialsDataAccessor.Update(validPriceSpecial);
 
             Assert.AreEqual(result, "Success.");
+        }
+
+        [Test]
+        public void UpdateNonExistentSpecialReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Milk")).Returns((ISpecial)null);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var result = specialsDataAccessor.Update(nonExistentPriceSpecial);
+
+            Assert.AreEqual(result, "Error: Special does not exist, please create special before updating.");
         }
     }
 }
