@@ -23,6 +23,14 @@ namespace ProductServiceTests
         private RestrictionSpecial restrictionSpecialWithZeroDiscountAmount;
         private RestrictionSpecial restrictionSpecialWithZeroDiscountQty;
         private PriceSpecial nonExistentPriceSpecial;
+        private ValidationResponse successValidationResponse;
+        private ValidationResponse zeroPriceValidationResponse;
+        private ValidationResponse purchaseQuantityLessThanTwoValidationResponse;
+        private ValidationResponse zeroLimitValidationResponse;
+        private ValidationResponse zeroDiscountAmountValidationResponse;
+        private ValidationResponse limitLessThanPurchaseQuantityValidationResponse;
+        private ValidationResponse limitNotAMultipleOfPurchaseQtyPlusDiscountQtyValidationResponse;
+        private ValidationResponse zeroDiscountQuantityValidationResponse;
 
         [SetUp]
         public void Setup()
@@ -39,6 +47,53 @@ namespace ProductServiceTests
             restrictionSpecialWithZeroDiscountAmount = new RestrictionSpecial("Bananas", 2, true, 1, 0, RestrictionType.Lesser);
             restrictionSpecialWithZeroDiscountQty = new RestrictionSpecial("Bananas", 2, true, 0, 0.5f, RestrictionType.Lesser);
             nonExistentPriceSpecial = new PriceSpecial("Milk", 2, true, 5);
+            successValidationResponse = new ValidationResponse
+            {
+                IsValid = true,
+                Message = "Success."
+            };
+
+            zeroPriceValidationResponse = new ValidationResponse
+            {
+                IsValid = false,
+                Message = "Error: Price must be bigger than 0."
+            };
+
+            purchaseQuantityLessThanTwoValidationResponse = new ValidationResponse
+            {
+                IsValid = false,
+                Message = "Error: Purchase quantity must be bigger than 1."
+            };
+
+            zeroLimitValidationResponse = new ValidationResponse
+            {
+                IsValid = false,
+                Message = "Error: Limit must be bigger than 0."
+            };
+
+            zeroDiscountAmountValidationResponse = new ValidationResponse
+            {
+                IsValid = false,
+                Message = "Error: Discount amount must be bigger than zero."
+            };
+
+            limitLessThanPurchaseQuantityValidationResponse = new ValidationResponse
+            {
+                IsValid = false,
+                Message = "Error: Limit must be bigger than purchase quantity."
+            };
+
+            limitNotAMultipleOfPurchaseQtyPlusDiscountQtyValidationResponse = new ValidationResponse
+            {
+                IsValid = false,
+                Message = "Error: Limit must be a multiple of purchase quantity plus discount quantity."
+            };
+
+            zeroDiscountQuantityValidationResponse = new ValidationResponse
+            {
+                IsValid = false,
+                Message = "Error: Discount quantity must be bigger than zero."
+            };
 
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
@@ -51,7 +106,10 @@ namespace ProductServiceTests
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetAll()).Returns(specialsList);
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var specials = specialsDataAccessor.GetAll();
 
             Assert.NotNull(specials);
@@ -63,7 +121,10 @@ namespace ProductServiceTests
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var special = specialsDataAccessor.GetByProductName("Can of soup");
 
             Assert.NotNull(special);
@@ -75,7 +136,10 @@ namespace ProductServiceTests
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Bananas")).Returns((ISpecial)null);
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var special = specialsDataAccessor.GetByProductName("Bananas");
 
             Assert.IsNull(special);
@@ -87,7 +151,11 @@ namespace ProductServiceTests
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.Save(validPriceSpecial));
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(validPriceSpecial)).Returns(successValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(validPriceSpecial);
 
             Assert.AreEqual(result, "Success.");
@@ -99,7 +167,11 @@ namespace ProductServiceTests
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.Save(validPriceSpecial));
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(validPriceSpecial)).Returns(successValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(validPriceSpecial);
 
             Assert.AreEqual(result, "Success.");
@@ -108,9 +180,13 @@ namespace ProductServiceTests
         [Test]
         public void AddingPriceSpecialWithZeroPriceReturnsError()
         {
-            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();            
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(zeroPriceSpecial)).Returns(zeroPriceValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(zeroPriceSpecial);
 
             Assert.AreEqual(result, "Error: Price must be bigger than 0.");
@@ -121,7 +197,11 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(lessThanTwoQuantityPriceSpecial)).Returns(purchaseQuantityLessThanTwoValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(lessThanTwoQuantityPriceSpecial);
 
             Assert.AreEqual(result, "Error: Purchase quantity must be bigger than 1.");
@@ -132,7 +212,11 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(validLimitSpecial)).Returns(successValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(validLimitSpecial);
 
             Assert.AreEqual(result, "Success.");
@@ -143,7 +227,11 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithoutLimit)).Returns(zeroLimitValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(limitSpecialWithoutLimit);
 
             Assert.AreEqual(result, "Error: Limit must be bigger than 0.");
@@ -154,10 +242,15 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithoutDiscount))
+                .Returns(zeroDiscountAmountValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(limitSpecialWithoutDiscount);
 
-            Assert.AreEqual(result, "Error: Discount must be bigger than 0.");
+            Assert.AreEqual(result, "Error: Discount amount must be bigger than zero.");
         }
 
         [Test]
@@ -165,7 +258,12 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithLimitLessThanPurchaseQty))
+                .Returns(limitLessThanPurchaseQuantityValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(limitSpecialWithLimitLessThanPurchaseQty);
 
             Assert.AreEqual(result, "Error: Limit must be bigger than purchase quantity.");
@@ -176,7 +274,12 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty))
+                .Returns(limitNotAMultipleOfPurchaseQtyPlusDiscountQtyValidationResponse);
+            
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty);
 
             Assert.AreEqual(result, "Error: Limit must be a multiple of purchase quantity plus discount quantity.");
@@ -187,7 +290,11 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(validPriceSpecial)).Returns(successValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(validRestrictionSpecial);
 
             Assert.AreEqual(result, "Success.");
@@ -198,7 +305,11 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(restrictionSpecialWithZeroDiscountAmount)).Returns(zeroDiscountAmountValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(restrictionSpecialWithZeroDiscountAmount);
 
             Assert.AreEqual(result, "Error: Discount amount must be bigger than zero.");
@@ -209,7 +320,11 @@ namespace ProductServiceTests
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(restrictionSpecialWithZeroDiscountQty)).Returns(zeroDiscountQuantityValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Save(restrictionSpecialWithZeroDiscountQty);
 
             Assert.AreEqual(result, "Error: Discount quantity must be bigger than zero.");
@@ -222,7 +337,10 @@ namespace ProductServiceTests
             mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
             mockSpecialsRepository.Setup(x => x.Update(validPriceSpecial)).Returns(true);
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Update(validPriceSpecial);
 
             Assert.AreEqual(result, "Success.");
@@ -234,7 +352,10 @@ namespace ProductServiceTests
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Milk")).Returns((ISpecial)null);
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Update(nonExistentPriceSpecial);
 
             Assert.AreEqual(result, "Error: Special does not exist, please create special before updating.");
@@ -246,7 +367,10 @@ namespace ProductServiceTests
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
 
-            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Update(zeroPriceSpecial);
 
             Assert.AreEqual(result, "Error: Price must be bigger than 0.");

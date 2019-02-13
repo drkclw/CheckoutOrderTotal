@@ -102,7 +102,7 @@ namespace ProductServiceTests
             var result = specialsValidator.Validate(limitSpecialWithoutDiscountAmount);
 
             Assert.AreEqual(result.IsValid, false);
-            Assert.AreEqual(result.Message, "Error: Discount amount must be bigger than 0.");
+            Assert.AreEqual(result.Message, "Error: Discount amount must be bigger than zero.");
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace ProductServiceTests
             var result = specialsValidator.Validate(limitSpecialWithoutDiscountQuantity);
 
             Assert.AreEqual(result.IsValid, false);
-            Assert.AreEqual(result.Message, "Error: Discount quantity must be bigger than 0.");
+            Assert.AreEqual(result.Message, "Error: Discount quantity must be bigger than zero.");
         }
 
         [Test]

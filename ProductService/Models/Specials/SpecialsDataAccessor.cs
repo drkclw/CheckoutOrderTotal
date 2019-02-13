@@ -8,10 +8,13 @@ namespace ProductService.Models.Specials
     public class SpecialsDataAccessor : IDataAccessor<ISpecial>
     {
         private IRepository<ISpecial> _specialsRepository;
+        private IValidator<ISpecial> _specialsValidator;
 
-        public SpecialsDataAccessor(IRepository<ISpecial> specialsRepository)
+        public SpecialsDataAccessor(IRepository<ISpecial> specialsRepository, 
+            IValidator<ISpecial> specialsValidator)
         {
             _specialsRepository = specialsRepository;
+            _specialsValidator = specialsValidator;
         }
 
         public IList<ISpecial> GetAll()
@@ -63,7 +66,7 @@ namespace ProductService.Models.Specials
 
                 if (limitSpecial.DiscountAmount == 0)
                 {
-                    return "Error: Discount must be bigger than 0.";
+                    return "Error: Discount amount must be bigger than 0.";
                 }
 
                 if (limitSpecial.PurchaseQty > limitSpecial.Limit)
@@ -125,7 +128,7 @@ namespace ProductService.Models.Specials
             {
                 return "Error: Special does not exist, please create special before updating.";
             }
-            return string.Empty;
+
         }        
     }
 }
