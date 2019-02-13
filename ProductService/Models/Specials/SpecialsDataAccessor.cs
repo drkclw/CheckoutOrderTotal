@@ -80,6 +80,13 @@ namespace ProductService.Models.Specials
                 return "Success.";
             }else if (saveThis.Type == SpecialType.Restriction)
             {
+                var restrictionSpecial = (RestrictionSpecial)saveThis;
+
+                if(restrictionSpecial.DiscountAmount == 0)
+                {
+                    return "Error: Discount amount must be bigger than zero.";
+                }
+
                 _specialsRepository.Save(saveThis);
                 return "Success.";
             }
