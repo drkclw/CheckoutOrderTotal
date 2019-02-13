@@ -13,6 +13,7 @@ namespace ProductServiceTests
         private PriceSpecial zeroPriceSpecial;
         private PriceSpecial lessThanTwoQuantityPriceSpecial;
         private LimitSpecial validLimitSpecial;
+        private LimitSpecial limitSpecialWithoutLimit;
 
         [SetUp]
         public void Setup()
@@ -21,6 +22,7 @@ namespace ProductServiceTests
             zeroPriceSpecial = new PriceSpecial("Can of soup", 2, true, 0);
             lessThanTwoQuantityPriceSpecial = new PriceSpecial("Can of soup", 1, true, 5);
             validLimitSpecial = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 6);
+            limitSpecialWithoutLimit = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 0);
         }
 
         [Test]
@@ -65,6 +67,17 @@ namespace ProductServiceTests
 
             Assert.AreEqual(result.IsValid, true);
             Assert.AreEqual(result.Message, "Success.");
+        }
+
+        [Test]
+        public void ValidateLimitSpecialWithoutLimitReturnsError()
+        {
+            IValidator<ISpecial> specialsValidator = new SpecialsValidator();
+
+            var result = specialsValidator.Validate(limitSpecialWithoutLimit);
+
+            Assert.AreEqual(result.IsValid, false);
+            Assert.AreEqual(result.Message, "Error: Limit must be bigger than 0.");
         }
     }
 }
