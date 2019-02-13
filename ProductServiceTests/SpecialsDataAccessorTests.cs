@@ -21,6 +21,7 @@ namespace ProductServiceTests
         private LimitSpecial limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty;
         private RestrictionSpecial validRestrictionSpecial;
         private RestrictionSpecial restrictionSpecialWithZeroDiscountAmount;
+        private RestrictionSpecial restrictionSpecialWithZeroDiscountQty;
 
         [SetUp]
         public void Setup()
@@ -35,6 +36,7 @@ namespace ProductServiceTests
             limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 5);
             validRestrictionSpecial = new RestrictionSpecial("Bananas", 2, true, 1, 0.5f, RestrictionType.Lesser);
             restrictionSpecialWithZeroDiscountAmount = new RestrictionSpecial("Bananas", 2, true, 1, 0, RestrictionType.Lesser);
+            restrictionSpecialWithZeroDiscountQty = new RestrictionSpecial("Bananas", 2, true, 0, 0.5f, RestrictionType.Lesser);
 
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
@@ -198,6 +200,17 @@ namespace ProductServiceTests
             var result = specialsDataAccessor.Save(restrictionSpecialWithZeroDiscountAmount);
 
             Assert.AreEqual(result, "Error: Discount amount must be bigger than zero.");
+        }
+
+        [Test]
+        public void AddingRestrictionSpecialWithZeroDiscountQtyReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var result = specialsDataAccessor.Save(restrictionSpecialWithZeroDiscountQty);
+
+            Assert.AreEqual(result, "Error: Discount quantity must be bigger than zero.");
         }
     }
 }

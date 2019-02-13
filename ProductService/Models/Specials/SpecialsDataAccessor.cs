@@ -87,6 +87,11 @@ namespace ProductService.Models.Specials
                     return "Error: Discount amount must be bigger than zero.";
                 }
 
+                if (restrictionSpecial.DiscountQty == 0)
+                {
+                    return "Error: Discount quantity must be bigger than zero.";
+                }
+
                 _specialsRepository.Save(saveThis);
                 return "Success.";
             }
