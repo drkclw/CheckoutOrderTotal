@@ -78,6 +78,10 @@ namespace ProductService.Models.Specials
 
                 _specialsRepository.Save(saveThis);
                 return "Success.";
+            }else if (saveThis.Type == SpecialType.Restriction)
+            {
+                _specialsRepository.Save(saveThis);
+                return "Success.";
             }
             return "";
         }
