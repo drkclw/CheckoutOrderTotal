@@ -216,7 +216,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void UpdateValidExistingSpecialReturnsSuccess()
+        public void UpdateExistingSpecialReturnsSuccess()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
@@ -238,6 +238,18 @@ namespace ProductServiceTests
             var result = specialsDataAccessor.Update(nonExistentPriceSpecial);
 
             Assert.AreEqual(result, "Error: Special does not exist, please create special before updating.");
+        }
+
+        [Test]
+        public void UpdateExistingPriceSpecialWithSpecialWithZeroPriceReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var result = specialsDataAccessor.Update(zeroPriceSpecial);
+
+            Assert.AreEqual(result, "Error: Price must be bigger than 0.");
         }
     }
 }
