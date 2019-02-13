@@ -20,6 +20,7 @@ namespace ProductServiceTests
         private LimitSpecial limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty;
         private RestrictionSpecial validRestrictionSpecial;
         private RestrictionSpecial restrictionSpecialWithZeroDiscountAmount;
+        private RestrictionSpecial restrictionSpecialWithZeroDiscountQuantity;
 
         [SetUp]
         public void Setup()
@@ -35,6 +36,7 @@ namespace ProductServiceTests
             limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 5);
             validRestrictionSpecial = new RestrictionSpecial("Bananas", 2, true, 1, 0.5f, RestrictionType.Lesser);
             restrictionSpecialWithZeroDiscountAmount = new RestrictionSpecial("Bananas", 2, true, 1, 0, RestrictionType.Lesser);
+            restrictionSpecialWithZeroDiscountQuantity = new RestrictionSpecial("Bananas", 2, true, 0, 0.5f, RestrictionType.Lesser);
         }
 
         [Test]
@@ -156,6 +158,17 @@ namespace ProductServiceTests
 
             Assert.AreEqual(result.IsValid, false);
             Assert.AreEqual(result.Message, "Error: Discount amount must be bigger than zero.");
+        }
+
+        [Test]
+        public void ValidateRestrictionSpecialWithZeroDiscountQuantityReturnsError()
+        {
+            IValidator<ISpecial> specialsValidator = new SpecialsValidator();
+
+            var result = specialsValidator.Validate(restrictionSpecialWithZeroDiscountQuantity);
+
+            Assert.AreEqual(result.IsValid, false);
+            Assert.AreEqual(result.Message, "Error: Discount quantity must be bigger than zero.");
         }
     }
 }
