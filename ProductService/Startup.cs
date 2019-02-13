@@ -33,6 +33,8 @@ namespace ProductService
             services.AddSingleton<IRepository<ISpecial>, SpecialsRepository>();
             services.AddSingleton<IRepository<Markdown>, MarkdownRepository>();
             services.AddTransient<IDataAccessor<Markdown>, MarkdownDataAccessor>();
+            services.AddTransient<IDataAccessor<Product>, PriceDataAccessor>();
+            services.AddTransient<IDataAccessor<ISpecial>, SpecialsDataAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

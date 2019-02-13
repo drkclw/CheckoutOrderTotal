@@ -14,95 +14,47 @@ namespace ProductService.Controllers
     [ApiController]
     public class SpecialsController : ControllerBase
     {
-        private IRepository<ISpecial> _specialsRepository;
+        private IDataAccessor<ISpecial> _specialsDataAccessor;
 
-        public SpecialsController(IRepository<ISpecial> specialsRepository)
+        public SpecialsController(IDataAccessor<ISpecial> specialsDataAccessor)
         {
-            _specialsRepository = specialsRepository;
+            _specialsDataAccessor = specialsDataAccessor;
         }
 
         [HttpGet]
         [Route("allspecials")]
         public ActionResult<IEnumerable<ISpecial>> GetAllSpecials()
         {
-            return _specialsRepository.GetAll().ToList();
+            return _specialsDataAccessor.GetAll().ToList();
         }
 
         [HttpPost]
         public ActionResult<string> AddSpecial([FromBody] SpecialRequest specialRequest)
         {
-            if(specialRequest.Type == SpecialType.Price)
+            string result = string.Empty;
+            if (specialRequest.Type == SpecialType.Price)
             {
                 var priceSpecial = new PriceSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
                     specialRequest.IsActive, specialRequest.Price);
-                if(priceSpecial.PurchaseQty > 1)
-                {
-                    if(priceSpecial.Price > 0)
-                    {
-                        _specialsRepository.Save(priceSpecial);
-                        return "Success.";
-                    }
-                    else
-                    {
-                        return "Error: Price must be bigger than 0.";
-                    }
-                }
-                else
-                {
-                    return "Error: Purchase quantity must be bigger than 1.";
-                }
-            }else if(specialRequest.Type == SpecialType.Limit)
+                result = _specialsDataAccessor.Save(priceSpecial);
+            }
+            else if (specialRequest.Type == SpecialType.Limit)
             {
-                if (specialRequest.Limit > 0)
-                {
-                    if (specialRequest.DiscountAmount > 0)
-                    {
-                        if (specialRequest.Limit > specialRequest.PurchaseQty)
-                        {
-                            var limitSpecial = new LimitSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
-                                specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount, specialRequest.Limit);
 
-                            _specialsRepository.Save(limitSpecial);
-                            return "Success.";
-                        }
-                        else
-                        {
-                            return "Error: Limit must be bigger than purchase quantity.";
-                        }
-                    }
-                    else
-                    {
-                        return "Error: Discount must be bigger than 0.";
-                    }
-                }
-                else
-                {
-                    return "Error: Limit must be bigger than 0.";
-                }
-            }else if(specialRequest.Type == SpecialType.Restriction)
+                var limitSpecial = new LimitSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                    specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount, specialRequest.Limit);
+                result = _specialsDataAccessor.Save(limitSpecial);
+            }
+            else if (specialRequest.Type == SpecialType.Restriction)
             {
-                if (specialRequest.DiscountAmount > 0)
-                {
-                    if (specialRequest.DiscountQty > 0)
-                    {
-                        var restrictionSpecial = new RestrictionSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
-                            specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount,
-                            specialRequest.RestrictionType);
-                        _specialsRepository.Save(restrictionSpecial);
-                        return "Success.";
-                    }
-                    else
-                    {
-                        return "Error: Discount quantity must be bigger than zero.";
-                    }
-                }
-                else
-                {
-                    return "Error: Discount amount must be bigger than zero.";
-                }
+                var restrictionSpecial = new RestrictionSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                    specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount,
+                    specialRequest.RestrictionType);
+
+                result = _specialsDataAccessor.Save(restrictionSpecial);
             }
 
-            return "Special type not found.";
+            return result;
         }
     }
 }
