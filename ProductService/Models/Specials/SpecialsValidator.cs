@@ -59,7 +59,7 @@ namespace ProductService.Models.Specials
                     return new ValidationResponse
                     {
                         IsValid = false,
-                        Message = "Error: Discount must be bigger than 0."
+                        Message = "Error: Discount amount must be bigger than 0."
                     };
                 }
 
