@@ -105,7 +105,12 @@ namespace ProductService.Models.Specials
 
         public string Update(ISpecial updateThis)
         {
-            return "Success.";
+            var existingSpecial = _specialsRepository.GetByProductName(updateThis.ProductName);
+            if (existingSpecial != null)
+            {
+                return "Success.";
+            }
+            return string.Empty;
         }        
     }
 }

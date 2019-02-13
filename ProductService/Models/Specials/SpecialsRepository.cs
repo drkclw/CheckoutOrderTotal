@@ -36,16 +36,9 @@ namespace ProductService.Models.Specials
         {
             var specialsDict = specialsList.ToDictionary(p => p.ProductName, p => p);
 
-            if (specialsDict.ContainsKey(updateThis.ProductName))
-            {
-                specialsDict[updateThis.ProductName] = updateThis;
-                specialsList = specialsDict.Values.ToList();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            specialsDict[updateThis.ProductName] = updateThis;
+            specialsList = specialsDict.Values.ToList();
+            return true;
         }
     }
 }

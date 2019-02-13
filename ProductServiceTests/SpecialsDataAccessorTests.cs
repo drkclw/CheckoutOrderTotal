@@ -217,6 +217,7 @@ namespace ProductServiceTests
         public void UpdateValidExistingSpecialReturnsSuccess()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
             mockSpecialsRepository.Setup(x => x.Update(validPriceSpecial)).Returns(true);
 
             SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
