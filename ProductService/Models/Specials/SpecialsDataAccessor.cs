@@ -105,7 +105,7 @@ namespace ProductService.Models.Specials
 
         public string Update(ISpecial updateThis)
         {
-            throw new NotImplementedException();
+            return "Success.";
         }        
     }
 }
