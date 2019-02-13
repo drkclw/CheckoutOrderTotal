@@ -63,6 +63,15 @@ namespace ProductService.Models.Specials
                     };
                 }
 
+                if (limitSpecial.DiscountQty == 0)
+                {
+                    return new ValidationResponse
+                    {
+                        IsValid = false,
+                        Message = "Error: Discount quantity must be bigger than 0."
+                    };
+                }
+
                 if (limitSpecial.PurchaseQty > limitSpecial.Limit)
                 {
                     return new ValidationResponse

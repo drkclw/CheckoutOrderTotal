@@ -15,6 +15,7 @@ namespace ProductServiceTests
         private LimitSpecial validLimitSpecial;
         private LimitSpecial limitSpecialWithoutLimit;
         private LimitSpecial limitSpecialWithoutDiscountAmount;
+        private LimitSpecial limitSpecialWithoutDiscountQuantity;
         private LimitSpecial limitSpecialWithLimitLessThanPurchaseQty;
         private LimitSpecial limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty;
 
@@ -27,6 +28,7 @@ namespace ProductServiceTests
             validLimitSpecial = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 6);
             limitSpecialWithoutLimit = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 0);
             limitSpecialWithoutDiscountAmount = new LimitSpecial("Can of beans", 2, true, 1, 0, 4);
+            limitSpecialWithoutDiscountQuantity = new LimitSpecial("Can of beans", 2, true, 0, 0.5f, 4);
             limitSpecialWithLimitLessThanPurchaseQty = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 1);
             limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 5);
         }
@@ -95,6 +97,17 @@ namespace ProductServiceTests
 
             Assert.AreEqual(result.IsValid, false);
             Assert.AreEqual(result.Message, "Error: Discount amount must be bigger than 0.");
+        }
+
+        [Test]
+        public void ValidateLimitSpecialWithoutDiscountQuantityReturnsError()
+        {
+            IValidator<ISpecial> specialsValidator = new SpecialsValidator();
+
+            var result = specialsValidator.Validate(limitSpecialWithoutDiscountQuantity);
+
+            Assert.AreEqual(result.IsValid, false);
+            Assert.AreEqual(result.Message, "Error: Discount quantity must be bigger than 0.");
         }
 
         [Test]
