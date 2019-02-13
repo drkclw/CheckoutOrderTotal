@@ -31,7 +31,7 @@ namespace ProductService.Models.Specials
 
         public string Save(ISpecial saveThis)
         {
-            if(saveThis.Type == SpecialType.Price)
+            if (saveThis.Type == SpecialType.Price)
             {
                 var priceSpecial = (PriceSpecial)saveThis;
 
@@ -51,25 +51,33 @@ namespace ProductService.Models.Specials
                 {
                     return "Error: Price must be bigger than 0.";
                 }
-            }else if(saveThis.Type == SpecialType.Limit)
+            }
+            else if (saveThis.Type == SpecialType.Limit)
             {
                 var limitSpecial = (LimitSpecial)saveThis;
-                if (limitSpecial.Limit > 0)
-                {
-                    if (limitSpecial.DiscountAmount > 0)
-                    {
-                        _specialsRepository.Save(saveThis);
-                        return "Success.";
-                    }
-                    else
-                    {
-                        return "Error: Discount must be bigger than 0.";
-                    }
-                }
-                else
+
+                if (limitSpecial.Limit == 0)
                 {
                     return "Error: Limit must be bigger than 0.";
                 }
+
+                if (limitSpecial.DiscountAmount == 0)
+                {
+                    return "Error: Discount must be bigger than 0.";
+                }
+
+                if (limitSpecial.PurchaseQty > limitSpecial.Limit)
+                {
+                    return "Error: Limit must be bigger than purchase quantity.";
+                }
+
+                if(limitSpecial.Limit % (limitSpecial.PurchaseQty + limitSpecial.DiscountQty) > 0)
+                {
+                    return "Error: Limit must be a multiple of purchase quantity plus discount quantity.";
+                }
+
+                _specialsRepository.Save(saveThis);
+                return "Success.";
             }
             return "";
         }

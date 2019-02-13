@@ -17,16 +17,20 @@ namespace ProductServiceTests
         private PriceSpecial lessThanTwoQuantityPriceSpecial;
         private LimitSpecial limitSpecialWithoutLimit;
         private LimitSpecial limitSpecialWithoutDiscount;
+        private LimitSpecial limitSpecialWithLimitLessThanPurchaseQty;
+        private LimitSpecial limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty;
 
         [SetUp]
         public void Setup()
         {
             validPriceSpecial = new PriceSpecial("Can of soup", 2, true, 5);
-            validLimitSpecial = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 4);
+            validLimitSpecial = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 6);
             zeroPriceSpecial = new PriceSpecial("Can of soup", 2, true, 0);
             lessThanTwoQuantityPriceSpecial = new PriceSpecial("Can of soup", 1, true, 5);
             limitSpecialWithoutLimit = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 0);
-            limitSpecialWithoutDiscount = new LimitSpecial("Can of beans", 2, true, 1, 0, 2);
+            limitSpecialWithoutDiscount = new LimitSpecial("Can of beans", 2, true, 1, 0, 4);
+            limitSpecialWithLimitLessThanPurchaseQty = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 1);
+            limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 5);
 
             specialsList = new List<ISpecial>();
             specialsList.Add(validPriceSpecial);
@@ -146,6 +150,28 @@ namespace ProductServiceTests
             var result = specialsDataAccessor.Save(limitSpecialWithoutDiscount);
 
             Assert.AreEqual(result, "Error: Discount must be bigger than 0.");
+        }
+
+        [Test]
+        public void AddingLimitSpecialWithSmallerLimitThanPurchaseQuantityReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var result = specialsDataAccessor.Save(limitSpecialWithLimitLessThanPurchaseQty);
+
+            Assert.AreEqual(result, "Error: Limit must be bigger than purchase quantity.");
+        }
+
+        [Test]
+        public void AddingLimitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQtyReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object);
+            var result = specialsDataAccessor.Save(limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty);
+
+            Assert.AreEqual(result, "Error: Limit must be a multiple of purchase quantity plus discount quantity.");
         }
     }
 }
