@@ -16,7 +16,8 @@ namespace ProductServiceTests
         private PriceSpecial zeroPriceSpecial;
         private PriceSpecial lessThanTwoQuantityPriceSpecial;
         private LimitSpecial limitSpecialWithoutLimit;
-        private LimitSpecial limitSpecialWithoutDiscount;
+        private LimitSpecial limitSpecialWithoutDiscountAmount;
+        private LimitSpecial limitSpecialWithoutDiscountQuantity;
         private LimitSpecial limitSpecialWithLimitLessThanPurchaseQty;
         private LimitSpecial limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty;
         private RestrictionSpecial validRestrictionSpecial;
@@ -40,7 +41,8 @@ namespace ProductServiceTests
             zeroPriceSpecial = new PriceSpecial("Can of soup", 2, true, 0);
             lessThanTwoQuantityPriceSpecial = new PriceSpecial("Can of soup", 1, true, 5);
             limitSpecialWithoutLimit = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 0);
-            limitSpecialWithoutDiscount = new LimitSpecial("Can of beans", 2, true, 1, 0, 4);
+            limitSpecialWithoutDiscountAmount = new LimitSpecial("Can of beans", 2, true, 1, 0, 4);
+            limitSpecialWithoutDiscountQuantity = new LimitSpecial("Can of beans", 2, true, 0, 0.5f, 4);
             limitSpecialWithLimitLessThanPurchaseQty = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 1);
             limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQty = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 5);
             validRestrictionSpecial = new RestrictionSpecial("Bananas", 2, true, 1, 0.5f, RestrictionType.Lesser);
@@ -238,19 +240,35 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void AddingLimitSpecialWithoutDiscountReturnsError()
+        public void AddingLimitSpecialWithoutDiscountAmountReturnsError()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
 
             Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
-            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithoutDiscount))
+            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithoutDiscountAmount))
                 .Returns(zeroDiscountAmountValidationResponse);
 
             SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
                 mockSpecialsValidator.Object);
-            var result = specialsDataAccessor.Save(limitSpecialWithoutDiscount);
+            var result = specialsDataAccessor.Save(limitSpecialWithoutDiscountAmount);
 
             Assert.AreEqual(result, "Error: Discount amount must be bigger than zero.");
+        }
+
+        [Test]
+        public void AddingLimitSpecialWithoutDiscountQuantityReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithoutDiscountQuantity))
+                .Returns(zeroDiscountQuantityValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
+            var result = specialsDataAccessor.Save(limitSpecialWithoutDiscountQuantity);
+
+            Assert.AreEqual(result, "Error: Discount quantity must be bigger than zero.");
         }
 
         [Test]
@@ -289,9 +307,10 @@ namespace ProductServiceTests
         public void AddingValidRestrictionSpecialReturnsSuccess()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.Save(validRestrictionSpecial));
 
             Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
-            mockSpecialsValidator.Setup(x => x.Validate(validPriceSpecial)).Returns(successValidationResponse);
+            mockSpecialsValidator.Setup(x => x.Validate(validRestrictionSpecial)).Returns(successValidationResponse);
 
             SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
                 mockSpecialsValidator.Object);
