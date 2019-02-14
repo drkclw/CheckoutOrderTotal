@@ -413,5 +413,21 @@ namespace ProductServiceTests
 
             Assert.AreEqual(result, "Error: Purchase quantity must be bigger than 1.");
         }
+
+        [Test]
+        public void UpdateValidLimitSpecialReturnsSuccess()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Can of beans")).Returns(validLimitSpecial);
+
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(validLimitSpecial)).Returns(successValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
+            var result = specialsDataAccessor.Update(validLimitSpecial);
+
+            Assert.AreEqual(result, "Success.");
+        }
     }
 }
