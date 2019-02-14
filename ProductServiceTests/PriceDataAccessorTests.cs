@@ -134,6 +134,7 @@ namespace ProductServiceTests
         public void UpdateValidExistingPriceReturnsSuccess()
         {
             Mock<IRepository<Product>> mockPriceRepository = new Mock<IRepository<Product>>();
+            mockPriceRepository.Setup(x => x.GetAll()).Returns(productList);
             mockPriceRepository.Setup(x => x.Update(validProduct)).Returns(true);
 
             PriceDataAccessor priceDataAccessor = new PriceDataAccessor(mockPriceRepository.Object);

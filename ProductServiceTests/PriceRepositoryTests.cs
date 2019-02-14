@@ -107,18 +107,7 @@ namespace ProductServiceTests
             bool updated = priceRepository.Update(updatedProduct);            
 
             Assert.IsTrue(updated);
-        }
-
-        [Test]
-        public void UpdateWithNonExistentPriceReturnsFalse()
-        {
-            IRepository<Product> priceRepository = new PriceRepository();
-
-            priceRepository.Save(product);
-            bool updated = priceRepository.Update(product2);
-
-            Assert.IsFalse(updated);
-        }
+        }        
 
         [Test]
         public void UpdateWithExistingPriceUpdatesRightData()
