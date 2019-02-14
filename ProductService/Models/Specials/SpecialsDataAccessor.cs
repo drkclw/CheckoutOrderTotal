@@ -56,18 +56,17 @@ namespace ProductService.Models.Specials
             var existingSpecial = _specialsRepository.GetByProductName(updateThis.ProductName);
             if (existingSpecial != null)
             {
-                if(updateThis.Type == SpecialType.Price)
-                {
-                    var priceSpecial = (PriceSpecial)updateThis;
+                var validationResponse = _specialsValidator.Validate(updateThis);
 
-                    if(priceSpecial.Price == 0)
-                    {
-                        return "Error: Price must be bigger than 0.";
-                    }
+                if (validationResponse.IsValid)
+                {
+                    _specialsRepository.Update(updateThis);
+                    return validationResponse.Message;
                 }
-                    
-                _specialsRepository.Update(updateThis);
-                return "Success.";
+                else
+                {
+                    return validationResponse.Message;
+                }
             }
             else
             {

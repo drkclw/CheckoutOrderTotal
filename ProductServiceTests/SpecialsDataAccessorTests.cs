@@ -350,13 +350,15 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void UpdateExistingSpecialReturnsSuccess()
+        public void UpdateExistingValidSpecialReturnsSuccess()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
             mockSpecialsRepository.Setup(x => x.Update(validPriceSpecial)).Returns(true);
 
             Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(validPriceSpecial))
+                .Returns(successValidationResponse);
 
             SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
                 mockSpecialsValidator.Object);
@@ -381,18 +383,35 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void UpdateExistingPriceSpecialWithSpecialWithZeroPriceReturnsError()
+        public void UpdatePriceSpecialWithPriceSpecialWithZeroPriceReturnsError()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
 
             Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(zeroPriceSpecial)).Returns(zeroPriceValidationResponse);
 
             SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
                 mockSpecialsValidator.Object);
             var result = specialsDataAccessor.Update(zeroPriceSpecial);
 
             Assert.AreEqual(result, "Error: Price must be bigger than 0.");
+        }
+
+        [Test]
+        public void UpdatePriceSpecialWithPriceSpecialWithPurchaseQuantityLessThanTwoReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
+
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(lessThanTwoQuantityPriceSpecial)).Returns(purchaseQuantityLessThanTwoValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
+            var result = specialsDataAccessor.Update(lessThanTwoQuantityPriceSpecial);
+
+            Assert.AreEqual(result, "Error: Purchase quantity must be bigger than 1.");
         }
     }
 }
