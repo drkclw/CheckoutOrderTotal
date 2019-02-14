@@ -441,7 +441,7 @@ namespace ProductServiceTests
 
             SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
                 mockSpecialsValidator.Object);
-            var result = specialsDataAccessor.Save(limitSpecialWithoutLimit);
+            var result = specialsDataAccessor.Update(limitSpecialWithoutLimit);
 
             Assert.AreEqual(result, "Error: Limit must be bigger than 0.");
         }
@@ -458,7 +458,7 @@ namespace ProductServiceTests
 
             SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
                 mockSpecialsValidator.Object);
-            var result = specialsDataAccessor.Save(limitSpecialWithoutDiscountAmount);
+            var result = specialsDataAccessor.Update(limitSpecialWithoutDiscountAmount);
 
             Assert.AreEqual(result, "Error: Discount amount must be bigger than zero.");
         }
@@ -475,9 +475,26 @@ namespace ProductServiceTests
 
             SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
                 mockSpecialsValidator.Object);
-            var result = specialsDataAccessor.Save(limitSpecialWithoutDiscountQuantity);
+            var result = specialsDataAccessor.Update(limitSpecialWithoutDiscountQuantity);
 
             Assert.AreEqual(result, "Error: Discount quantity must be bigger than zero.");
+        }
+
+        [Test]
+        public void UpdateLimitSpecialWithLimitSpecialWithSmallerLimitThanPurchaseQuantityReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Can of beans")).Returns(validLimitSpecial);
+
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithLimitLessThanPurchaseQty))
+                .Returns(limitLessThanPurchaseQuantityValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
+            var result = specialsDataAccessor.Update(limitSpecialWithLimitLessThanPurchaseQty);
+
+            Assert.AreEqual(result, "Error: Limit must be bigger than purchase quantity.");
         }
     }
 }
