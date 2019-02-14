@@ -546,5 +546,21 @@ namespace ProductServiceTests
 
             Assert.AreEqual(result, "Error: Discount amount must be bigger than zero.");
         }
+
+        [Test]
+        public void UpdateRestrictionSpecialWithRestrictionSpecialWithZeroDiscountQtyReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Bananas")).Returns(validRestrictionSpecial);
+
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(restrictionSpecialWithZeroDiscountQty)).Returns(zeroDiscountQuantityValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
+            var result = specialsDataAccessor.Update(restrictionSpecialWithZeroDiscountQty);
+
+            Assert.AreEqual(result, "Error: Discount quantity must be bigger than zero.");
+        }
     }
 }
