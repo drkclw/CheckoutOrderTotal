@@ -562,5 +562,21 @@ namespace ProductServiceTests
 
             Assert.AreEqual(result, "Error: Discount quantity must be bigger than zero.");
         }
+
+        [Test]
+        public void AddingValidSpecialForProductThatAlreadyHasASpecialReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
+
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(validPriceSpecial)).Returns(successValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
+            var result = specialsDataAccessor.Save(validPriceSpecial);
+
+            Assert.AreEqual(result, "Error: A special already exists for this product, update special instead.");
+        }
     }
 }

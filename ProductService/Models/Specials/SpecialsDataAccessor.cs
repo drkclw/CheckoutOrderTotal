@@ -37,8 +37,17 @@ namespace ProductService.Models.Specials
             var validationResponse = _specialsValidator.Validate(saveThis);
             if (validationResponse.IsValid)
             {
-                _specialsRepository.Save(saveThis);
-                return validationResponse.Message;
+                var existingSpecial = _specialsRepository.GetByProductName(saveThis.ProductName);
+
+                if (existingSpecial == null)
+                {
+                    _specialsRepository.Save(saveThis);
+                    return validationResponse.Message;
+                }
+                else
+                {
+                    return "Error: A special already exists for this product, update special instead.";
+                }
             }
             else
             {
