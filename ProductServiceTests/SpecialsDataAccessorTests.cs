@@ -431,7 +431,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void UpdateLimitSpecialWithSpecialWithoutLimitReturnsError()
+        public void UpdateLimitSpecialWithLimitSpecialWithoutLimitReturnsError()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Can of beans")).Returns(validLimitSpecial);
@@ -447,7 +447,7 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void UpdateLimitSpecialWithSpecialWithoutDiscountAmountReturnsError()
+        public void UpdateLimitSpecialWithLimitSpecialWithoutDiscountAmountReturnsError()
         {
             Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
             mockSpecialsRepository.Setup(x => x.GetByProductName("Can of beans")).Returns(validLimitSpecial);
@@ -461,6 +461,23 @@ namespace ProductServiceTests
             var result = specialsDataAccessor.Save(limitSpecialWithoutDiscountAmount);
 
             Assert.AreEqual(result, "Error: Discount amount must be bigger than zero.");
+        }
+
+        [Test]
+        public void UpdateLimitSpecialWithLimitSpecialWithoutDiscountQuantityReturnsError()
+        {
+            Mock<IRepository<ISpecial>> mockSpecialsRepository = new Mock<IRepository<ISpecial>>();
+            mockSpecialsRepository.Setup(x => x.GetByProductName("Can of beans")).Returns(validLimitSpecial);
+
+            Mock<IValidator<ISpecial>> mockSpecialsValidator = new Mock<IValidator<ISpecial>>();
+            mockSpecialsValidator.Setup(x => x.Validate(limitSpecialWithoutDiscountQuantity))
+                .Returns(zeroDiscountQuantityValidationResponse);
+
+            SpecialsDataAccessor specialsDataAccessor = new SpecialsDataAccessor(mockSpecialsRepository.Object,
+                mockSpecialsValidator.Object);
+            var result = specialsDataAccessor.Save(limitSpecialWithoutDiscountQuantity);
+
+            Assert.AreEqual(result, "Error: Discount quantity must be bigger than zero.");
         }
     }
 }
