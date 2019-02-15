@@ -56,5 +56,19 @@ namespace ProductService.Controllers
 
             return result;
         }
+
+        [HttpPut]
+        public ActionResult<string> UpdateSpecial([FromBody] SpecialRequest specialRequest)
+        {
+            string result = string.Empty;
+            if (specialRequest.Type == SpecialType.Price)
+            {
+                var priceSpecial = new PriceSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                    specialRequest.IsActive, specialRequest.Price);
+                result = _specialsDataAccessor.Update(priceSpecial);
+            }            
+
+            return result;
+        }
     }
 }

@@ -349,5 +349,21 @@ namespace ProductServiceTests
 
             Assert.AreEqual(contentResult.Value, "Error: A special already exists for this product, update special instead.");
         }
+
+        [Test]
+        public void UpdateValidPriceSpecialReturnsSuccess()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.Update(
+                It.Is<PriceSpecial>(s => s.Price > 0 && s.PurchaseQty >= 2)))
+                .Returns("Success.");
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+
+            var result = specialsController.UpdateSpecial(validPriceSpecialRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Success.");
+        }
     }
 }
