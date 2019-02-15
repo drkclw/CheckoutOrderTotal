@@ -602,5 +602,17 @@ namespace ProductServiceTests
 
             Assert.AreEqual(contentResult.Value, "Error: Discount quantity must be bigger than zero.");
         }
+
+        [Test]
+        public void GetByProductNameWithExistingSpecialReturnsSpecialResponse()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.GetByProductName("Can of soup")).Returns(validPriceSpecial);
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+            var result = specialsController.GetSpecial("Can of soup");            
+
+            Assert.NotNull(result);
+        }
     }
 }

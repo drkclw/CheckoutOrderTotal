@@ -35,6 +35,7 @@ namespace ProductService
             services.AddTransient<IDataAccessor<Markdown>, MarkdownDataAccessor>();
             services.AddTransient<IDataAccessor<Product>, PriceDataAccessor>();
             services.AddTransient<IDataAccessor<ISpecial>, SpecialsDataAccessor>();
+            services.AddTransient<IValidator<ISpecial>, SpecialsValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

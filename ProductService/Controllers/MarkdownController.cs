@@ -23,7 +23,7 @@ namespace ProductService.Controllers
 
         // GET api/allmarkdowns
         [HttpGet]
-        [Route("allmarkdowns")]
+        [Route("markdowns")]
         public ActionResult<IEnumerable<Markdown>> GetAllMarkdowns()
         {
             return _dataAccessor.GetAll().ToList();

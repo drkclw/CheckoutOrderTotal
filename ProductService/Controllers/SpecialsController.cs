@@ -22,7 +22,7 @@ namespace ProductService.Controllers
         }
 
         [HttpGet]
-        [Route("allspecials")]
+        [Route("specials")]
         public ActionResult<IEnumerable<ISpecial>> GetAllSpecials()
         {
             return _specialsDataAccessor.GetAll().ToList();
@@ -85,5 +85,28 @@ namespace ProductService.Controllers
 
             return result;
         }
+
+        [HttpGet("{productName}")]
+        [Route("special")]
+        public ActionResult<SpecialResponse> GetSpecial([FromQuery]string productName)
+        {
+            var special = _specialsDataAccessor.GetByProductName(productName);
+
+            if (special != null)
+            {
+                var specialResponse = new SpecialResponse
+                {
+                    ProductName = special.ProductName,
+                    PurchaseQty = special.PurchaseQty,
+                    DiscountQty = special.PurchaseQty,
+                    Type = special.Type
+                };
+
+                return specialResponse;
+            }
+
+            return null;
+        }
+
     }
 }
