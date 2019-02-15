@@ -381,5 +381,21 @@ namespace ProductServiceTests
 
             Assert.AreEqual(contentResult.Value, "Error: Price must be bigger than 0.");
         }
+
+        [Test]
+        public void UpdatePriceSpecialWithPurchaseQuantityLessThanTwoReturnsError()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.Update(
+                It.Is<PriceSpecial>(s => s.PurchaseQty < 2)))
+                .Returns("Error: Purchase quantity must be bigger than 1.");
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+
+            var result = specialsController.UpdateSpecial(lessThanTwoQuantityPriceSpecialRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Purchase quantity must be bigger than 1.");
+        }
     }
 }
