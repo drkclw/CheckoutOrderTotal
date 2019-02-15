@@ -614,5 +614,17 @@ namespace ProductServiceTests
 
             Assert.NotNull(result);
         }
+
+        [Test]
+        public void GetByProductNameWithExistingNonExistentSpecialReturnsNull()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.GetByProductName("Bananas")).Returns((ISpecial)null);
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+            var result = specialsController.GetSpecial("Bananas");
+
+            Assert.IsNull(result);
+        }
     }
 }
