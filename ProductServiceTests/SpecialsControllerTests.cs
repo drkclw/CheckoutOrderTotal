@@ -254,19 +254,19 @@ namespace ProductServiceTests
         }
 
         [Test]
-        public void AddingLimitSpecialWithoutDiscountReturnsError()
+        public void AddingLimitSpecialWithoutDiscountAmountReturnsError()
         {
             Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
             mockSpecialsDataAccessor.Setup(x => x.Save(
                 It.Is<LimitSpecial>(s => s.DiscountAmount == 0)))
-                .Returns("Error: Discount must be bigger than 0.");
+                .Returns("Error: Discount amount must be bigger than zero.");
 
             SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
 
             var result = specialsController.AddSpecial(limitSpecialWithoutDiscountRequest);
             var contentResult = result as ActionResult<string>;
 
-            Assert.AreEqual(contentResult.Value, "Error: Discount must be bigger than 0.");
+            Assert.AreEqual(contentResult.Value, "Error: Discount amount must be bigger than zero.");
         }
 
         [Test]
