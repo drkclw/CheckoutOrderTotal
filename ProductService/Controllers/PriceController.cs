@@ -9,7 +9,7 @@ using ProductService.Models.Prices;
 
 namespace ProductService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("price-management/")]
     [ApiController]
     public class PriceController : ControllerBase
     {
@@ -22,26 +22,29 @@ namespace ProductService.Controllers
 
         // GET api/allprices
         [HttpGet]
-        [Route("allprices")]
+        [Route("prices")]
         public ActionResult<IEnumerable<Product>> GetAllPrices()
         {            
             return _priceDataAccessor.GetAll().ToList();
         }
 
         [HttpPost]
+        [Route("prices")]
         public ActionResult<string> AddPrice([FromBody] Product product)
         {
             return _priceDataAccessor.Save(product);
         }
 
         [HttpPut]
+        [Route("price")]
         public ActionResult<string> UpdatePrice([FromBody] Product product)
         {
             return _priceDataAccessor.Update(product);
         }
 
         [HttpGet("{productName}")]
-        public ActionResult<float> GetPrice(string productName)
+        [Route("price")]
+        public ActionResult<float> GetPrice([FromQuery]string productName)
         {
             return _priceDataAccessor.GetAmountByProductName(productName);
         }

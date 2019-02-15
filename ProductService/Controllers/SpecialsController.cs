@@ -10,7 +10,7 @@ using ProductService.Models.Prices;
 
 namespace ProductService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("specials-management/")]
     [ApiController]
     public class SpecialsController : ControllerBase
     {
@@ -29,6 +29,7 @@ namespace ProductService.Controllers
         }
 
         [HttpPost]
+        [Route("specials")]
         public ActionResult<string> AddSpecial([FromBody] SpecialRequest specialRequest)
         {
             string result = string.Empty;
@@ -58,6 +59,7 @@ namespace ProductService.Controllers
         }
 
         [HttpPut]
+        [Route("special")]
         public ActionResult<string> UpdateSpecial([FromBody] SpecialRequest specialRequest)
         {
             string result = string.Empty;

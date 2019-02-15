@@ -10,7 +10,7 @@ using ProductService.Models;
 
 namespace ProductService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("markdown-management/")]
     [ApiController]
     public class MarkdownController : ControllerBase
     {
@@ -30,19 +30,22 @@ namespace ProductService.Controllers
         }
 
         [HttpPost]
+        [Route("markdowns")]
         public ActionResult<string> AddMarkdown([FromBody] Markdown markdown)
         {
             return _dataAccessor.Save(markdown);
         }
 
         [HttpPut]
+        [Route("markdown")]
         public ActionResult<string> UpdateMarkdown([FromBody] Markdown markdown)
         {
             return _dataAccessor.Update(markdown);
         }
 
         [HttpGet("{productName}")]
-        public ActionResult<float> GetMarkdown(string productName)
+        [Route("markdown")]
+        public ActionResult<float> GetMarkdown([FromQuery]string productName)
         {
             return _dataAccessor.GetAmountByProductName(productName);
         }
