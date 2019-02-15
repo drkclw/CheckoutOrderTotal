@@ -23,6 +23,7 @@ namespace ProductServiceTests
         private SpecialRequest limitSpecialWithoutDiscountAmountRequest;
         private SpecialRequest limitSpecialWithoutDiscountQuantityRequest;
         private SpecialRequest limitSpecialWithLimitLessThanPurchaseQtyRequest;
+        private SpecialRequest limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQtyRequest;
         private RestrictionSpecial validRestrictionSpecial;
         private SpecialRequest validRestrictionSpecialRequest;
         private SpecialRequest restrictionSpecialWithZeroDiscountAmountRequest;
@@ -59,7 +60,7 @@ namespace ProductServiceTests
                 Type = SpecialType.Price
             };
 
-            validLimitSpecial = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 4);
+            validLimitSpecial = new LimitSpecial("Can of beans", 2, true, 1, 0.5f, 6);
 
             validLimitSpecialRequest = new SpecialRequest
             {
@@ -113,6 +114,17 @@ namespace ProductServiceTests
                 DiscountQty = 1,
                 DiscountAmount = 0.5f,
                 Limit = 1,
+                Type = SpecialType.Limit
+            };
+
+            limitSpecialWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQtyRequest = new SpecialRequest
+            {
+                ProductName = "Can of beans",
+                PurchaseQty = 2,
+                IsActive = true,
+                DiscountQty = 1,
+                DiscountAmount = 0.5f,
+                Limit = 5,
                 Type = SpecialType.Limit
             };
 
@@ -311,6 +323,23 @@ namespace ProductServiceTests
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Error: Limit must be bigger than purchase quantity.");
+        }
+
+        [Test]
+        public void AddingLimitSpecialWithWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQtyReturnsError()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.Save(
+                It.Is<LimitSpecial>(s => s.Limit % (s.PurchaseQty + s.DiscountQty) != 0)))
+                .Returns("Error: Limit must be a multiple of purchase quantity plus discount quantity.");
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+
+            var result = specialsController.AddSpecial(limitSpecialWithLimitLessThanPurchaseQtyRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, 
+                "Error: Limit must be a multiple of purchase quantity plus discount quantity.");
         }
 
         [Test]
