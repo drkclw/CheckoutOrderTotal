@@ -20,7 +20,8 @@ namespace ProductServiceTests
         private LimitSpecial validLimitSpecial;
         private SpecialRequest validLimitSpecialRequest;
         private SpecialRequest limitSpecialWithoutLimitRequest;
-        private SpecialRequest limitSpecialWithoutDiscountRequest;
+        private SpecialRequest limitSpecialWithoutDiscountAmountRequest;
+        private SpecialRequest limitSpecialWithoutDiscountQuantityRequest;
         private SpecialRequest limitSpecialWithLimitLessThanPurchaseQtyRequest;
         private RestrictionSpecial validRestrictionSpecial;
         private SpecialRequest validRestrictionSpecialRequest;
@@ -82,13 +83,24 @@ namespace ProductServiceTests
                 Type = SpecialType.Limit
             };
 
-            limitSpecialWithoutDiscountRequest = new SpecialRequest
+            limitSpecialWithoutDiscountAmountRequest = new SpecialRequest
             {
                 ProductName = "Can of beans",
                 PurchaseQty = 2,
                 IsActive = true,
                 DiscountQty = 1,
                 DiscountAmount = 0,
+                Limit = 4,
+                Type = SpecialType.Limit
+            };
+
+            limitSpecialWithoutDiscountQuantityRequest = new SpecialRequest
+            {
+                ProductName = "Can of beans",
+                PurchaseQty = 2,
+                IsActive = true,
+                DiscountQty = 0,
+                DiscountAmount = 0.5f,
                 Limit = 4,
                 Type = SpecialType.Limit
             };
@@ -263,10 +275,26 @@ namespace ProductServiceTests
 
             SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
 
-            var result = specialsController.AddSpecial(limitSpecialWithoutDiscountRequest);
+            var result = specialsController.AddSpecial(limitSpecialWithoutDiscountAmountRequest);
             var contentResult = result as ActionResult<string>;
 
             Assert.AreEqual(contentResult.Value, "Error: Discount amount must be bigger than zero.");
+        }
+
+        [Test]
+        public void AddingLimitSpecialWithoutDiscountQuantityReturnsError()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.Save(
+                It.Is<LimitSpecial>(s => s.DiscountQty == 0)))
+                .Returns("Error: Discount quantity must be bigger than zero.");
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+
+            var result = specialsController.AddSpecial(limitSpecialWithoutDiscountQuantityRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Discount quantity must be bigger than zero.");
         }
 
         [Test]
