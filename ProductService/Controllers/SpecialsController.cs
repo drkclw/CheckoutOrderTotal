@@ -74,6 +74,14 @@ namespace ProductService.Controllers
                     specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount, specialRequest.Limit);
                 result = _specialsDataAccessor.Update(limitSpecial);
             }
+            else if (specialRequest.Type == SpecialType.Restriction)
+            {
+                var restrictionSpecial = new RestrictionSpecial(specialRequest.ProductName, specialRequest.PurchaseQty,
+                    specialRequest.IsActive, specialRequest.DiscountQty, specialRequest.DiscountAmount,
+                    specialRequest.RestrictionType);
+
+                result = _specialsDataAccessor.Update(restrictionSpecial);
+            }
 
             return result;
         }
