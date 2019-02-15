@@ -365,5 +365,21 @@ namespace ProductServiceTests
 
             Assert.AreEqual(contentResult.Value, "Success.");
         }
+
+        [Test]
+        public void UpdatePriceSpecialWithZeroPriceReturnsError()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.Update(
+                It.Is<PriceSpecial>(s => s.Price == 0)))
+                .Returns("Error: Price must be bigger than 0.");
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+
+            var result = specialsController.UpdateSpecial(zeroPriceSpecialRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Price must be bigger than 0.");
+        }
     }
 }
