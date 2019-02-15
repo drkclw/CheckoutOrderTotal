@@ -397,5 +397,23 @@ namespace ProductServiceTests
 
             Assert.AreEqual(contentResult.Value, "Error: Purchase quantity must be bigger than 1.");
         }
+
+        [Test]
+        public void UpdateValidLimitSpecialReturnsSuccess()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.Update(
+                It.Is<LimitSpecial>(s => s.Type == SpecialType.Limit && s.Limit > 0
+                && s.DiscountAmount > 0 && s.Limit > s.PurchaseQty
+                && (s.Limit % (s.PurchaseQty + s.DiscountQty) == 0))))
+                .Returns("Success.");
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+
+            var result = specialsController.UpdateSpecial(validLimitSpecialRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Success.");
+        }
     }
 }
