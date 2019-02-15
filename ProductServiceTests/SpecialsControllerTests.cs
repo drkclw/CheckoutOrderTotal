@@ -536,5 +536,22 @@ namespace ProductServiceTests
 
             Assert.AreEqual(contentResult.Value, "Error: Limit must be bigger than purchase quantity.");
         }
+
+        [Test]
+        public void UpdateLimitSpecialWithWithLimitNotAMultipleOfPurchaseQtyPlusDiscountQtyReturnsError()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.Update(
+                It.Is<LimitSpecial>(s => s.Limit % (s.PurchaseQty + s.DiscountQty) != 0)))
+                .Returns("Error: Limit must be a multiple of purchase quantity plus discount quantity.");
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+
+            var result = specialsController.UpdateSpecial(limitSpecialWithLimitLessThanPurchaseQtyRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value,
+                "Error: Limit must be a multiple of purchase quantity plus discount quantity.");
+        }
     }
 }
