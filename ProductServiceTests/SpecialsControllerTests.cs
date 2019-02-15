@@ -415,5 +415,21 @@ namespace ProductServiceTests
 
             Assert.AreEqual(contentResult.Value, "Success.");
         }
+
+        [Test]
+        public void UpdateLimitSpecialWithoutLimitReturnsError()
+        {
+            Mock<IDataAccessor<ISpecial>> mockSpecialsDataAccessor = new Mock<IDataAccessor<ISpecial>>();
+            mockSpecialsDataAccessor.Setup(x => x.Save(
+                It.Is<LimitSpecial>(s => s.Limit == 0)))
+                .Returns("Error: Limit must be bigger than 0.");
+
+            SpecialsController specialsController = new SpecialsController(mockSpecialsDataAccessor.Object);
+
+            var result = specialsController.AddSpecial(limitSpecialWithoutLimitRequest);
+            var contentResult = result as ActionResult<string>;
+
+            Assert.AreEqual(contentResult.Value, "Error: Limit must be bigger than 0.");
+        }
     }
 }
